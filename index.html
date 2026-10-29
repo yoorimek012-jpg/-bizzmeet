@@ -128,6 +128,8 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
 .code-demo{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .code-demo strong{font-size:20px;letter-spacing:4px;color:var(--text)}
 .verified-line{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:600;font-size:13.5px;margin-top:8px}
+.upload{display:flex;align-items:center;justify-content:center;min-height:120px;border:1.5px dashed var(--line);border-radius:14px;background:var(--surface);cursor:pointer;overflow:hidden;font-size:14px;color:var(--muted)}
+.upload img{width:100%;max-height:220px;object-fit:contain}
 .agree{border:1.5px solid var(--line);border-radius:14px;padding:6px 14px;margin:6px 0 18px;background:var(--surface)}
 .agree label{display:flex;gap:10px;align-items:center;font-size:14px;padding:9px 0}
 .agree label+label{border-top:1px solid var(--line)}
@@ -305,7 +307,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
       <div class="sky">
         <div class="brand"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z"/></svg>BizzMeet</div>
         <h1>퇴근길의 설렘을,<br>친구와 함께라서<br>덜 어색하게.</h1>
-        <p>회사 메일로 재직이 확인된 직장인끼리 2:2부터 4:4까지. 회사 근처든 집 근처든, 딱 중간이든 만나고 싶은 곳에서요.</p>
+        <p>재직이 확인된 직장인끼리 2:2부터 4:4까지. 회사 근처든 집 근처든, 딱 중간이든 만나고 싶은 곳에서요.</p>
         <svg class="meet-art" viewBox="0 0 360 100" aria-hidden="true">
           <circle class="dot-a" cx="40" cy="58" r="17"/><circle class="dot-a" cx="78" cy="44" r="17" opacity=".85"/><circle class="dot-a" cx="112" cy="64" r="17" opacity=".7"/>
           <circle class="dot-b" cx="248" cy="64" r="17" opacity=".7"/><circle class="dot-b" cx="282" cy="44" r="17" opacity=".85"/><circle class="dot-b" cx="320" cy="58" r="17"/>
@@ -314,13 +316,13 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
       </div>
       <div class="land-body">
         <div class="how">
-          <div><span class="ic">💌</span><p><b>회사 메일로 재직 인증</b><span>개인 메일은 받지 않아요. 상대 팀도 모두 인증된 직장인이에요.</span></p></div>
+          <div><span class="ic">💌</span><p><b>회사 메일 또는 명함으로 재직 인증</b><span>개인 메일은 받지 않아요. 메일이 없는 개업의·자영업자는 명함이나 서류 사진으로 인증해요.</span></p></div>
           <div><span class="ic">👯</span><p><b>친구와 팀으로, 혼자면 솔로 라운지에서</b><span>카톡이나 문자로 초대하고, 친구가 없으면 같은 성별끼리 먼저 팀을 꾸려요.</span></p></div>
           <div><span class="ic">🗺</span><p><b>지도에서 동네별 팀 찾기</b><span>강남역에 몇 팀, 성수에 몇 팀이 기다리는지 한눈에 봐요.</span></p></div>
           <div><span class="ic">🛡</span><p><b>노쇼·비매너는 바로 퇴장</b><span>당일 노쇼는 영구 이용 제한, 상대 팀에는 티켓으로 보상해요.</span></p></div>
         </div>
         <div class="land-cta">
-          <button class="btn btn-primary" onclick="go('screen-signup')">회사 메일로 시작하기</button>
+          <button class="btn btn-primary" onclick="go('screen-signup')">재직 인증하고 시작하기</button>
           <p class="fine">만 19세 이상 재직 중인 직장인만 이용할 수 있어요.</p>
           <p class="demo">시연용 프로토타입이에요. 메일 발송·결제·친구 초대 합류는 실제로 일어나지 않고, 데모 표시가 붙은 버튼으로 흉내만 내요.</p>
         </div>
@@ -357,11 +359,13 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
         <div class="field"><span class="flabel">성별</span><div class="seg" id="suGender"><button type="button" class="on" data-v="F" onclick="setSuG('F')">여성</button><button type="button" data-v="M" onclick="setSuG('M')">남성</button></div></div>
       </div>
       <div class="row">
-        <div class="field"><label for="suCompany">회사명</label><input class="input" id="suCompany" placeholder="예: 현대자동차"><p class="err" id="err-suCompany" hidden></p></div>
+        <div class="field"><label for="suCompany">회사명</label><input class="input" id="suCompany" placeholder="예: 현대자동차, OO의원"><p class="err" id="err-suCompany" hidden></p></div>
         <div class="field"><label for="suJob">직무</label><input class="input" id="suJob" placeholder="예: 사업기획"><p class="err" id="err-suJob" hidden></p></div>
       </div>
       <div class="field"><label for="suInd">업종</label><select class="input" id="suInd"></select></div>
 
+      <div class="field"><span class="flabel">재직 인증 방법</span><div class="seg" id="suMethod"><button type="button" class="on" data-v="email" onclick="setSuMethod('email')">회사 메일</button><button type="button" data-v="card" onclick="setSuMethod('card')">명함·서류 사진</button></div><p class="hint">회사 메일이 없거나 개업의·자영업자라면 명함이나 서류 사진으로 인증해요.</p></div>
+      <div id="emailPart">
       <div class="field">
         <label for="suEmail">회사 메일</label>
         <div class="row" style="gap:6px"><input class="input" id="suEmail" type="email" autocomplete="email" placeholder="name@company.com" style="flex:1"><button class="btn btn-ink btn-sm" style="height:48px;flex:none" onclick="suSend()">인증번호 받기</button></div>
@@ -375,6 +379,20 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
           <p class="err" id="err-suCode" hidden></p>
           <p class="verified-line" id="verifiedLine" hidden>✓ 재직 인증 완료</p>
         </div>
+      </div>
+      </div>
+
+      <div id="cardPart" hidden>
+        <div class="field"><label for="suDoc">어떤 서류로 인증할까요?</label>
+          <select class="input" id="suDoc"><option value="">선택해 주세요</option><option>명함</option><option>사원증</option><option>재직증명서</option><option>사업자등록증</option><option>의사·변호사 등 면허증</option></select>
+          <p class="err" id="err-suDoc" hidden></p>
+          <p class="hint">개업의·자영업자는 명함과 함께 사업자등록증이나 면허증을 올리면 더 빨리 승인돼요.</p></div>
+        <div class="field"><span class="flabel">사진 올리기</span>
+          <label class="upload" for="suFile"><span id="uploadText">📷 눌러서 촬영하거나 사진 고르기</span><img id="suPreview" alt="올린 서류 미리보기" hidden></label>
+          <input type="file" id="suFile" accept="image/*" hidden onchange="onCardFile(this)">
+          <p class="err" id="err-suFile" hidden></p>
+          <p class="hint">이름과 회사(병원·사업장)명이 보이게 찍어 주세요. 주민등록번호 같은 정보는 가리고 올려 주세요. 사진은 심사가 끝나면 바로 삭제돼요.</p></div>
+        <p class="note" style="margin-bottom:16px">운영팀이 24시간 안에 확인해요. 승인 전에도 둘러보기와 팀 만들기는 할 수 있고, 미팅 신청은 승인 후에 열려요.</p>
       </div>
 
       <div class="agree">
@@ -535,6 +553,8 @@ const won=n=>n.toLocaleString('ko-KR')+'원';
 const regionById=id=>REGIONS.find(r=>r.id===id);
 const teamById=id=>TEAMS.find(t=>t.id===id);
 const gLabel=g=>g==='F'?'여성':'남성';
+const vPending=u=>u.method==='card'&&u.cardStatus!=='approved';
+const vLabel=u=>u.method==='card'?`${u.doc} ${vPending(u)?'심사 중':'인증 완료'}`:`${u.domain} 재직 인증`;
 const oppG=()=>S.user&&S.user.g==='F'?'M':'F';
 const avg=t=>{const a=t.m.reduce((s,x)=>s+x[0],0)/t.m.length;return Number.isInteger(a)?a:a.toFixed(1);};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -557,7 +577,15 @@ function copyText(s,msg){
 }
 
 /* ---------- 회원가입 ---------- */
-const su={g:'F',code:null,exp:0,email:'',verified:false};
+const su={g:'F',method:'email',code:null,exp:0,email:'',verified:false,file:null};
+function setSuMethod(v){su.method=v;document.querySelectorAll('#suMethod button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#emailPart').hidden=v!=='email';$('#cardPart').hidden=v!=='card';}
+function onCardFile(inp){
+  const f=inp.files&&inp.files[0];if(!f)return;
+  if(!f.type.startsWith('image/'))return fieldErr('suFile','사진 파일만 올릴 수 있어요.');
+  if(f.size>10*1024*1024)return fieldErr('suFile','10MB 이하 사진만 올릴 수 있어요.');
+  fieldErr('suFile','');su.file=f.name;
+  const img=$('#suPreview');img.src=URL.createObjectURL(f);img.hidden=false;$('#uploadText').hidden=true;
+}
 $('#suInd').innerHTML=INDUSTRIES.map(i=>`<option>${i}</option>`).join('');
 function setSuG(g){su.g=g;document.querySelectorAll('#suGender button').forEach(b=>b.classList.toggle('on',b.dataset.v===g));}
 function suSend(){
@@ -584,20 +612,25 @@ function suSubmit(){
   ok=fieldErr('suAge',!age?'나이를 입력해 주세요.':age<19?'만 19세 이상만 가입할 수 있어요.':age>65?'나이를 다시 확인해 주세요.':'')&&ok;
   ok=fieldErr('suCompany',!company?'회사명을 입력해 주세요.':'')&&ok;
   ok=fieldErr('suJob',!job?'직무를 입력해 주세요.':'')&&ok;
-  if(!su.verified){fieldErr('suEmail','회사 메일 인증을 마쳐 주세요.');ok=false;}
+  if(su.method==='email'&&!su.verified){fieldErr('suEmail','회사 메일 인증을 마쳐 주세요.');ok=false;}
+  if(su.method==='card'){
+    ok=fieldErr('suDoc',!$('#suDoc').value?'인증할 서류 종류를 골라 주세요.':'')&&ok;
+    ok=fieldErr('suFile',!su.file?'서류 사진을 올려 주세요.':'')&&ok;
+  }
   const agreed=[...document.querySelectorAll('.ag')].every(c=>c.checked);
   fieldErr('submit',!agreed?'필수 약관에 모두 동의해 주세요.':(!ok?'빨간 글씨 항목을 확인해 주세요.':''));
   if(!ok||!agreed)return;
   S=fresh();
-  S.user={nick,age,g:su.g,company,job,ind:$('#suInd').value,email:su.email,domain:su.email.split('@')[1]};
+  const byCard=su.method==='card';
+  S.user={nick,age,g:su.g,company,job,ind:$('#suInd').value,method:su.method,email:byCard?'':su.email,domain:byCard?'':su.email.split('@')[1],doc:byCard?$('#suDoc').value:'',cardStatus:byCard?'pending':'approved'};
   S.tickets=1;save();enterApp();
-  toast(`${nick}님, 환영해요! 첫 미팅 신청 티켓 1장을 드렸어요.`);
+  toast(byCard?`${nick}님, 환영해요! 서류 확인이 끝나면 미팅 신청이 열려요. 티켓 1장은 미리 드렸어요.`:`${nick}님, 환영해요! 첫 미팅 신청 티켓 1장을 드렸어요.`);
 }
 
 /* ---------- 초대 링크 ---------- */
 function inviteBase(){return location.href.split('#')[0];}
 function inviteLink(){const t=S.myTeam;return `${inviteBase()}#join-${t.size}-${t.region}-${t.code}`;}
-function inviteText(){const t=S.myTeam,r=regionById(t.region);return `[BizzMeet] ${S.user.nick}님이 ${t.size}:${t.size} 미팅 팀(${r.name})에 초대했어요 💌 링크를 열고 회사 메일로 인증하면 바로 합류돼요.`;}
+function inviteText(){const t=S.myTeam,r=regionById(t.region);return `[BizzMeet] ${S.user.nick}님이 ${t.size}:${t.size} 미팅 팀(${r.name})에 초대했어요 💌 링크를 열고 재직 인증만 하면 바로 합류돼요.`;}
 function shareInvite(){
   const url=inviteLink();
   if(navigator.share){navigator.share({title:'BizzMeet 팀 초대',text:inviteText(),url}).catch(()=>{});}
@@ -605,7 +638,7 @@ function shareInvite(){
 }
 function smsHref(){return 'sms:?&body='+encodeURIComponent(inviteText()+' '+inviteLink());}
 function showInvite(size,region){
-  $('#inviteInfo').textContent=`${size}:${size} 미팅 팀, 희망 지역 ${regionById(region).name}. 회사 메일로 인증하면 바로 합류해요.`;
+  $('#inviteInfo').textContent=`${size}:${size} 미팅 팀, 희망 지역 ${regionById(region).name}. 재직 인증만 하면 바로 합류해요.`;
   go('screen-invite');
 }
 function acceptInvite(){
@@ -745,7 +778,7 @@ function openTeam(id){
   const t=teamById(id),r=regionById(t.region);
   openModal(`<div class="tc-top" style="margin-top:6px"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span><span class="tag">${LOC[t.loc].icon} ${LOC[t.loc].label}</span></div>
     <h3 class="m-title">${esc(r.name)}에서 만나고 싶은 팀</h3>
-    <ul class="members">${t.m.map((x,i)=>`<li><span class="mav">${i+1}</span><div><b>${esc(x[1])}</b><small>${x[0]}세, ${esc(x[2])}, 회사 메일 인증 완료</small></div></li>`).join('')}</ul>
+    <ul class="members">${t.m.map((x,i)=>`<li><span class="mav">${i+1}</span><div><b>${esc(x[1])}</b><small>${x[0]}세, ${esc(x[2])}, 재직 인증 완료</small></div></li>`).join('')}</ul>
     <dl class="kv"><dt>장소</dt><dd>${LOC[t.loc].label} (${esc(r.name)})</dd><dt>시간</dt><dd>${esc(t.when)}</dd><dt>분위기</dt><dd>${t.vibe.map(esc).join(', ')}</dd><dt>평균 나이</dt><dd>${avg(t)}세</dd></dl>
     ${t.intro?`<p class="quote">“${esc(t.intro)}”</p>`:''}
     <p class="note">회사명은 미팅이 확정되면 서로에게 공개돼요.</p>
@@ -754,6 +787,7 @@ function openTeam(id){
 function requestMeeting(id){
   const t=teamById(id);
   if(S.penaltyUntil>Date.now()){openModal(`<h3 class="m-title">지금은 신청할 수 없어요</h3><p class="m-text">24시간 이내 취소로 ${new Date(S.penaltyUntil).toLocaleDateString('ko-KR')}까지 이용이 정지됐어요.</p><button class="btn btn-ghost" onclick="closeModal()">확인</button>`);return;}
+  if(vPending(S.user)){openModal(`<h3 class="m-title">재직 인증을 확인하고 있어요</h3><p class="m-text">올려주신 ${esc(S.user.doc)} 사진을 운영팀이 확인 중이에요. 승인되면 바로 신청할 수 있어요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal();approveCard()">데모: 승인 처리</button></div>`);return;}
   if(!S.myTeam){openModal(`<h3 class="m-title">먼저 우리 팀이 있어야 해요</h3><p class="m-text">BizzMeet은 팀 대 팀으로 만나요. 친구를 초대해서 팀을 만들거나, 혼자라면 솔로 라운지에서 같은 성별 팀원을 구해 보세요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal();setTab('lounge')">솔로 라운지</button><button class="btn btn-primary" onclick="closeModal();openCreateTeam()">친구와 팀 만들기</button></div>`);return;}
   if(S.myTeam.status!=='ready'){const j=S.myTeam.members.filter(m=>m.joined).length;openModal(`<h3 class="m-title">팀원 인증이 아직 끝나지 않았어요</h3><p class="m-text">${S.myTeam.size}명 중 ${j}명이 인증했어요. 모두 인증하면 신청할 수 있어요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal();openInvite()">초대 링크 다시 보내기</button></div>`);return;}
   if(S.myTeam.size!==t.size){openModal(`<h3 class="m-title">인원이 맞지 않아요</h3><p class="m-text">이 팀은 ${t.size}:${t.size}이고 우리 팀은 ${S.myTeam.size}명이에요. 상단에서 ${S.myTeam.size}:${S.myTeam.size} 필터를 켜면 맞는 팀만 볼 수 있어요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal();V.size='${S.myTeam.size}';render()">${S.myTeam.size}:${S.myTeam.size}만 보기</button></div>`);return;}
@@ -811,7 +845,7 @@ function renderCT(first){
   <div class="sec"><h4>희망 지역</h4><div class="picks">${REGIONS.map(r=>`<button class="chip ${ct.region===r.id?'on':''}" onclick="ctSet('region','${r.id}')">${r.name}</button>`).join('')}</div></div>
   <div class="sec"><h4>편한 시간 (여러 개 선택)</h4><div class="picks">${WHEN.map(w=>`<button class="chip ${ct.when.includes(w)?'on':''}" onclick="ctToggle('when','${w}')">${w}</button>`).join('')}</div></div>
   <div class="sec"><h4>팀원 정보 (나이·직무 필수)</h4>
-    <div class="me-row"><span class="mav">1</span><span><b>${esc(u.nick)} (방장)</b><br><span class="muted">${u.age}세, ${esc(u.job)}, ✓ ${esc(u.domain)}</span></span></div>
+    <div class="me-row"><span class="mav">1</span><span><b>${esc(u.nick)} (방장)</b><br><span class="muted">${u.age}세, ${esc(u.job)}, ${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</span></span></div>
     ${rows.join('')}
     <p class="hint">친구들은 초대 링크로 가입하면서 직접 회사 메일 인증을 해요. 전원 인증이 끝나야 팀이 열려요.</p></div>
   <div class="sec"><h4>분위기</h4><div class="picks">${VIBES.map(v=>`<button class="chip ${ct.vibe.includes(v)?'on':''}" onclick="ctToggle('vibe','${v}')">${v}</button>`).join('')}</div></div>
@@ -1023,7 +1057,7 @@ function openPolicy(){
 /* ---------- MY ---------- */
 function renderMy(){
   const u=S.user,t=S.myTeam;
-  $('#myBody').innerHTML=`<div class="profile"><div class="avatar">${esc(u.nick.slice(0,1))}</div><div><b>${esc(u.nick)}</b><small>${u.age}세 ${gLabel(u.g)}, ${esc(u.ind)}</small><small>${esc(u.company)} ${esc(u.job)}</small><small style="color:var(--ok);font-weight:600">✓ ${esc(u.domain)} 재직 인증</small></div></div>
+  $('#myBody').innerHTML=`<div class="profile"><div class="avatar">${esc(u.nick.slice(0,1))}</div><div><b>${esc(u.nick)}</b><small>${u.age}세 ${gLabel(u.g)}, ${esc(u.ind)}</small><small>${esc(u.company)} ${esc(u.job)}</small><small style="color:${vPending(u)?'var(--warn)':'var(--ok)'};font-weight:600">${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</small>${vPending(u)?'<button class="btn btn-line btn-xs" style="margin-top:6px" onclick="approveCard()">데모: 운영팀 승인 처리</button>':''}</div></div>
     <div class="stats"><div><b>${S.tickets}장</b><small>티켓</small></div><div><b>${S.manner}°</b><small>매너 온도</small></div><div><b>${S.premium?'이용 중':'없음'}</b><small>프리미엄</small></div></div>
     <button class="btn btn-primary" style="margin-bottom:12px" onclick="openStore()">티켓·프리미엄 구매</button>
     <div class="box"><h4>우리 팀 ${t?`<span class="tag ${t.status==='ready'?'ok':'warn'}">${t.status==='ready'?'활성':'인증 대기'}</span>`:''}</h4>
@@ -1038,6 +1072,7 @@ function renderMy(){
     </div>
     <div class="box"><h4>시연용</h4><p class="muted" style="font-size:13px;margin-bottom:10px">이 프로토타입은 데이터를 이 기기 브라우저에만 저장해요.</p><button class="btn btn-line btn-sm" onclick="resetAll()">데모 데이터 지우고 처음부터</button></div>`;
 }
+function approveCard(){S.user.cardStatus='approved';save();render();toast('재직 인증이 승인됐어요 (데모).');}
 function disbandTeam(){confirmModal('팀을 해체할까요?','팀원들에게도 해체 알림이 가요. 보낸 신청 내역은 남아요.','해체하기',()=>{S.myTeam=null;save();render();toast('팀을 해체했어요.');},true);}
 function resetAll(){confirmModal('처음부터 다시 볼까요?','가입 정보, 팀, 신청 내역이 모두 지워져요.','모두 지우기',()=>{try{localStorage.removeItem(KEY);}catch(e){}S=fresh();V.region=null;V.loc='all';V.size='all';go('screen-landing');},true);}
 
