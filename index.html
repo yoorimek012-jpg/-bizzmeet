@@ -15,7 +15,7 @@
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700;800&family=Nanum+Pen+Script&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fdf8f9;--surface:#ffffff;--surface-2:#f7eef1;--text:#2a1630;--muted:#86717f;--line:#efe2e7;
@@ -25,7 +25,8 @@
   --map-land:#f6f0ec;--map-block:#ece3dd;--map-park:#dcead3;--map-water:#bcdcef;--map-road:#ffffff;--map-label:#b4a39b;
   --sky-a:#ffc9b5;--sky-b:#ff9fb3;--sky-c:#c6b4f0;
   --backdrop:#f0e5ea;--shadow:0 8px 24px rgba(70,20,50,.16);--scrim:rgba(30,10,26,.46);
-  --serif:"Gowun Batang","AppleMyungjo","Nanum Myeongjo",serif;
+  --serif:"Gothic A1",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --pen:"Nanum Pen Script","Gothic A1",cursive;
   --sans:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   color-scheme:light;
   box-sizing:border-box;
@@ -106,17 +107,24 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
 .muted{color:var(--muted);font-weight:400}
 
 /* landing */
-.land{min-height:100%;display:flex;flex-direction:column}
+.land{min-height:100%;display:flex;flex-direction:column;flex:none}
+.land>.sky{flex:none}
 .sky{position:relative;padding:28px 24px 30px;background:linear-gradient(175deg,var(--sky-c) 0%,var(--sky-b) 48%,var(--sky-a) 100%);overflow:hidden}
 .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--text)}
 .brand svg{width:24px;height:24px;color:var(--rose)}
-.sky h1{font-family:var(--serif);font-weight:700;font-size:31px;line-height:1.32;letter-spacing:-.5px;margin-top:34px;word-break:keep-all}
-.sky p{margin-top:12px;font-size:15px;line-height:1.65;word-break:keep-all;max-width:330px}
+.sky h1{font-family:var(--serif);font-weight:800;font-size:31px;line-height:1.28;letter-spacing:-1.5px;margin-top:34px;word-break:keep-all}
+.sky h1 b{font-weight:800}
+.sky h1 em{font-style:normal;font-family:var(--pen);font-weight:400;font-size:46px;letter-spacing:0;color:var(--rose-press)}
+.sky p{margin-top:12px;font-size:15px;line-height:1.65;word-break:keep-all;max-width:360px}
 .meet-art{display:block;width:100%;height:auto;margin-top:22px}
 .meet-art .dot-a{fill:var(--rose)}
 .meet-art .dot-b{fill:var(--plum)}
 .meet-art .heart{fill:var(--surface);animation:beat 2.4s ease-in-out infinite;transform-origin:180px 54px}
 @keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.18)}24%{transform:scale(1)}}
+.meet-art .fh{transform-box:fill-box;transform-origin:center;opacity:0;animation:fh 3.2s ease-out infinite}
+.meet-art .fh.w{fill:#ffffff}
+.meet-art .fh.r{fill:var(--rose)}
+@keyframes fh{0%{opacity:0;transform:translate(0,0) scale(.3)}15%{opacity:1}55%{opacity:.95;transform:translate(6px,-36px) scale(1)}100%{opacity:0;transform:translate(-4px,-70px) scale(1.15)}}
 .land-body{padding:24px;display:flex;flex-direction:column;gap:18px;flex:1}
 .how{display:flex;flex-direction:column;gap:14px}
 .how div{display:flex;gap:12px;align-items:flex-start}
@@ -314,19 +322,25 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
     <div class="land">
       <div class="sky">
         <div class="brand"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z"/></svg>BizzMeet</div>
-        <h1>퇴근길의 설렘을,<br>친구와 함께라서<br>덜 어색하게.</h1>
-        <p>재직이 확인된 직장인끼리 2:2부터 4:4까지. 회사 근처든 집 근처든, 딱 중간이든 만나고 싶은 곳에서요.</p>
-        <svg class="meet-art" viewBox="0 0 360 100" aria-hidden="true">
+        <h1>퇴근길의 <b>설렘</b>을,<br>친구와 함께라서<br><em>덜 어색하게.</em></h1>
+        <p>재직이 확인된 직장인끼리 2:2부터 4:4 미팅까지.<br>검증된 사람들과 새로운 인연을,<br>만나고 싶은 미팅 상대와 장소도 직접 정하세요.</p>
+        <svg class="meet-art" viewBox="0 -64 360 164" aria-hidden="true">
           <circle class="dot-a" cx="40" cy="58" r="17"/><circle class="dot-a" cx="78" cy="44" r="17" opacity=".85"/><circle class="dot-a" cx="112" cy="64" r="17" opacity=".7"/>
           <circle class="dot-b" cx="248" cy="64" r="17" opacity=".7"/><circle class="dot-b" cx="282" cy="44" r="17" opacity=".85"/><circle class="dot-b" cx="320" cy="58" r="17"/>
           <path class="heart" d="M180 72s-15-9.2-15-20.8A8.4 8.4 0 0 1 180 46a8.4 8.4 0 0 1 15 5.2C195 62.8 180 72 180 72z"/>
+          <g transform="translate(40,36)"><path class="fh w" style="animation-delay:0s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/><path class="fh r" style="animation-delay:1.7s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
+          <g transform="translate(78,22)"><path class="fh r" style="animation-delay:.6s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/><path class="fh w" style="animation-delay:2.3s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
+          <g transform="translate(112,42)"><path class="fh w" style="animation-delay:1.2s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
+          <g transform="translate(248,42)"><path class="fh w" style="animation-delay:.3s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
+          <g transform="translate(282,22)"><path class="fh r" style="animation-delay:1s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/><path class="fh w" style="animation-delay:2.6s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
+          <g transform="translate(320,36)"><path class="fh w" style="animation-delay:1.9s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/><path class="fh r" style="animation-delay:.4s" d="M0 6s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 0-7a4.2 4.2 0 0 1 7.5 2.6C7.5 1.4 0 6 0 6z"/></g>
         </svg>
       </div>
       <div class="land-body">
         <div class="how">
           <div><span class="ic">💌</span><p><b>회사 메일 또는 명함으로 재직 인증</b><span>개인 메일은 받지 않아요. 메일이 없는 개업의·자영업자는 명함이나 서류 사진으로 인증해요.</span></p></div>
           <div><span class="ic">👯</span><p><b>친구와 팀으로, 혼자면 솔로 라운지에서</b><span>카톡이나 문자로 초대하고, 친구가 없으면 같은 성별끼리 먼저 팀을 꾸려요.</span></p></div>
-          <div><span class="ic">🗺</span><p><b>지도에서 동네별 팀 찾기</b><span>강남역에 몇 팀, 성수에 몇 팀이 기다리는지 한눈에 봐요.</span></p></div>
+          <div><span class="ic">🗺</span><p><b>지도에서 지역별 팀 찾기</b><span>지역별로 몇 팀이 미팅을 기다리는지 한눈에 봐요.</span></p></div>
           <div><span class="ic">🛡</span><p><b>노쇼·비매너는 바로 퇴장</b><span>당일 노쇼는 영구 이용 제한, 상대 팀에는 티켓으로 보상해요.</span></p></div>
         </div>
         <div class="land-cta">
@@ -343,7 +357,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
     <div class="land">
       <div class="sky">
         <div class="brand"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-7.5-10.4A4.2 4.2 0 0 1 12 8a4.2 4.2 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z"/></svg>BizzMeet</div>
-        <h1>친구가 미팅 팀에<br>초대했어요 💌</h1>
+        <h1>친구가 미팅 팀에<br><em>초대했어요</em> 💌</h1>
         <p id="inviteInfo"></p>
       </div>
       <div class="land-body">
@@ -461,7 +475,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
             </div>
             <div id="pinLayer"></div>
           </div>
-          <div class="map-tip" id="mapTip">동네를 눌러 팀을 확인하세요</div>
+          <div class="map-tip" id="mapTip">지역을 눌러 팀을 확인하세요</div>
           <div class="penalty" id="penaltyBar" hidden></div>
           <div class="map-ctrl"><button aria-label="확대" onclick="zoomBtn(1.3)">+</button><button aria-label="축소" onclick="zoomBtn(1/1.3)">−</button><button aria-label="전체 보기" style="font-size:15px" onclick="resetRegion()">⟲</button></div>
 
@@ -791,7 +805,7 @@ function renderSheet(){
   let list=visibleTeams();const r=V.region&&regionById(V.region);
   if(r)list=list.filter(t=>t.region===r.id);
   $('#sheetTitle').innerHTML=r?`${esc(r.name)} <span class="muted">${list.length}팀</span>`:`만남을 기다리는 ${gLabel(oppG())} 팀 <span class="muted">${list.length}팀</span>`;
-  $('#sheetSub').textContent=r?'이 동네에서 만나고 싶어 하는 팀이에요.':'지도에서 동네를 누르면 그 지역 팀만 볼 수 있어요.';
+  $('#sheetSub').textContent=r?'이 지역에서 만나고 싶어 하는 팀이에요.':'지도에서 지역을 누르면 그 지역 팀만 볼 수 있어요.';
   $('#sheetReset').hidden=!r;
   $('#sheetList').innerHTML=list.length?list.map(teamCard).join(''):`<div class="empty"><b>조건에 맞는 팀이 아직 없어요</b>필터를 바꾸거나, 우리 팀을 먼저 올려 두면 상대가 신청할 수 있어요.<div class="row"><button class="btn btn-ghost btn-sm" onclick="V.loc='all';V.size='all';S.ind=[];save();render()">필터 초기화</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div></div>`;
 }
