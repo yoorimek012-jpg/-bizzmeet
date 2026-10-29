@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#e8406a">
 <title>BizzMeet – 검증된 직장인 팀 미팅</title>
+<meta name="description" content="재직 인증된 직장인끼리, 친구랑 같이 나가서 덜 어색한 2:2부터 4:4 팀 미팅">
+<meta property="og:type" content="website">
+<meta property="og:title" content="오늘 퇴근길, 설레는 미팅 어때요? – BizzMeet">
+<meta property="og:description" content="재직 인증된 직장인끼리, 친구랑 같이 나가서 덜 어색한 팀 미팅">
+<meta property="og:image" content="https://bizzmeet.vercel.app/kakao-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="600">
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -631,6 +639,21 @@ function suSubmit(){
 function inviteBase(){return location.href.split('#')[0];}
 function inviteLink(){const t=S.myTeam;return `${inviteBase()}#join-${t.size}-${t.region}-${t.code}`;}
 function inviteText(){const t=S.myTeam,r=regionById(t.region);return `[BizzMeet] ${S.user.nick}님이 ${t.size}:${t.size} 미팅 팀(${r.name})에 초대했어요 💌 링크를 열고 재직 인증만 하면 바로 합류돼요.`;}
+const KAKAO_JS_KEY='3995f0d825be19670c09e3a46eb5a569';
+const SHARE_IMG='https://bizzmeet.vercel.app/kakao-share.jpg';
+function kakaoReady(){try{if(!window.Kakao)return false;if(!Kakao.isInitialized())Kakao.init(KAKAO_JS_KEY);return Kakao.isInitialized();}catch(e){return false;}}
+function shareKakao(){
+  const url=inviteLink(),t=S.myTeam,r=regionById(t.region);
+  if(kakaoReady()){
+    try{
+      Kakao.Share.sendDefault({objectType:'feed',
+        content:{title:`💌 ${S.user.nick}님이 ${t.size}:${t.size} 미팅 팀에 초대했어요`,description:`${r.name}에서 만나요. 링크를 열고 재직 인증만 하면 바로 합류돼요.`,imageUrl:SHARE_IMG,imageWidth:1200,imageHeight:600,link:{mobileWebUrl:url,webUrl:url}},
+        buttons:[{title:'팀 합류하기',link:{mobileWebUrl:url,webUrl:url}}]});
+      return;
+    }catch(e){}
+  }
+  shareInvite();
+}
 function shareInvite(){
   const url=inviteLink();
   if(navigator.share){navigator.share({title:'BizzMeet 팀 초대',text:inviteText(),url}).catch(()=>{});}
@@ -875,10 +898,10 @@ function openInvite(){
     <ul class="members">${t.members.map((m,i)=>`<li><span class="mav ${m.joined?'':'wait'}">${i+1}</span><div><b>${esc(m.job)} ${m.me?'(나)':''}</b><small>${m.age}세, ${m.joined?'✓ 인증 완료':'초대 링크로 인증 대기'}</small></div></li>`).join('')}</ul>
     <div class="linkbox"><code>${esc(inviteLink())}</code><button class="btn btn-ink btn-xs" onclick="copyText(inviteLink())">복사</button></div>
     <div class="share-grid">
-      <button class="btn kakao" onclick="shareInvite()">카카오톡 등으로 공유</button>
+      <button class="btn kakao" onclick="shareKakao()">카카오톡으로 보내기</button>
       <a class="btn btn-line" href="${smsHref()}" style="text-decoration:none">문자로 보내기</a>
     </div>
-    <p class="hint" style="margin-top:10px">휴대폰에서 ‘공유’를 누르면 공유 창이 열리고, 거기서 카카오톡을 고르면 돼요. 이 링크는 실제로 열려요.</p>
+    <p class="hint" style="margin-top:10px">‘카카오톡으로 보내기’를 누르면 카톡 친구 목록이 열리고, 고른 친구에게 초대 카드가 가요. 이 링크는 실제로 열려요.</p>
     ${t.status!=='ready'?`<p class="demo" style="margin-top:16px">서버가 없어서 친구가 링크로 인증해도 이 화면에 반영되지 않아요. 흐름을 이어서 보려면 아래 버튼으로 합류를 흉내 내세요.</p><button class="btn btn-ghost" style="margin-top:8px" onclick="demoJoinAll()">데모: 친구들이 인증하고 합류한 것으로 처리</button>`:`<button class="btn btn-primary" style="margin-top:16px" onclick="closePanel();setTab('map')">지도에서 상대 팀 찾기</button>`}
   `);
 }
