@@ -85,7 +85,7 @@ button{cursor:pointer}
 .btn-line{background:transparent;border:1.5px solid var(--line);color:var(--text)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-sm{height:38px;font-size:13.5px;border-radius:12px;width:auto;padding:0 14px}
-.btn-xs{height:32px;font-size:12.5px;border-radius:10px;width:auto;padding:0 11px}
+.btn-xs{height:32px;font-size:12.5px;border-radius:10px;width:auto;padding:0 11px;white-space:nowrap}
 .row{display:flex;gap:8px}
 .row>*{flex:1}
 .field{margin-bottom:16px}
@@ -343,6 +343,14 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
 .box h4,.sec h4{font-size:17px}
 .panel-head h3{font-size:18px}
 .pcard h4,.mcard h4{font-size:17px}
+.teambar{display:flex;gap:6px;align-items:center;overflow-x:auto;padding:9px 14px 0;background:var(--surface);flex:none;scrollbar-width:none}
+.teambar::-webkit-scrollbar{display:none}
+.teambar .lab{font-size:12px;color:var(--muted);flex:none;font-weight:600;margin-right:2px}
+.tchip{flex:none;height:32px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:13px;font-weight:600}
+.tchip.on{border-color:var(--rose);background:var(--rose-soft);color:var(--rose)}
+.tchip.add{border-style:dashed;color:var(--muted)}
+.team-row{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}
+.team-row.on{border-color:var(--rose)}
 .toast{position:absolute;left:50%;bottom:84px;transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--on-ink);padding:11px 16px;border-radius:14px;font-size:13.5px;z-index:90;transition:opacity .22s,transform .22s;width:max-content;max-width:86%;text-align:center;pointer-events:none;word-break:keep-all}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -477,6 +485,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
     <div class="views">
       <!-- 지도 -->
       <div class="view on" id="view-map">
+        <div class="teambar" id="teamBar"></div>
         <div class="chips" id="chips"></div>
         <div class="map-area" id="mapArea">
           <div class="map-wrap" id="mapWrap">
@@ -606,10 +615,23 @@ const WHEN=['평일 저녁','금요일 저녁','주말 낮','주말 저녁'];
 const VIBES=['편한 대화','와인바','이자카야','맛집 탐방','칵테일바','보드게임','카페','다이닝'];
 
 /* ---------- 상태 ---------- */
-function fresh(){return{user:null,tickets:0,premium:false,manner:36.5,myTeam:null,meetings:[],myPosts:[],chats:{},reports:[],ind:[],penaltyUntil:0,dms:[],reqDay:'',reqCount:0};}
+function fresh(){return{user:null,tickets:0,premium:false,manner:36.5,myTeam:null,meetings:[],myPosts:[],chats:{},reports:[],ind:[],penaltyUntil:0,dms:[],reqDay:'',reqCount:0,teams:[],activeTeam:null};}
 function load(){try{const v=localStorage.getItem(KEY);return v?Object.assign(fresh(),JSON.parse(v)):fresh();}catch(e){return fresh();}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-let S=load();
+const MAX_TEAMS=3;
+function wrap(o){
+  if(!Array.isArray(o.teams))o.teams=[];
+  if(o.myTeam&&typeof o.myTeam==='object'&&!o.teams.length){const t=o.myTeam;t.id=t.id||'t'+Math.random().toString(36).slice(2,8);t.name=t.name||'우리 팀';o.teams.push(t);o.activeTeam=t.id;}
+  delete o.myTeam;
+  Object.defineProperty(o,'myTeam',{configurable:true,enumerable:false,
+    get(){return this.teams.find(t=>t.id===this.activeTeam)||null;},
+    set(v){
+      if(v===null){this.teams=this.teams.filter(t=>t.id!==this.activeTeam);this.activeTeam=this.teams[0]?this.teams[0].id:null;return;}
+      if(!v.id){v.id='t'+Math.random().toString(36).slice(2,8);if(!v.name)v.name='팀 '+(this.teams.length+1);this.teams.push(v);}
+      this.activeTeam=v.id;}});
+  return o;
+}
+let S=wrap(load());
 const V={tab:'map',loc:'all',size:'all',region:null,flash:false};
 
 /* ---------- 유틸 ---------- */
@@ -689,7 +711,7 @@ function suSubmit(){
   const agreed=[...document.querySelectorAll('.ag')].every(c=>c.checked);
   fieldErr('submit',!agreed?'필수 약관에 모두 동의해 주세요.':(!ok?'빨간 글씨 항목을 확인해 주세요.':''));
   if(!ok||!agreed)return;
-  S=fresh();
+  S=wrap(fresh());
   const byCard=su.method==='card';
   S.user={nick,age,height:hgt,g:su.g,company,job,ind:$('#suInd').value,method:su.method,email:byCard?'':su.email,domain:byCard?'':su.email.split('@')[1],doc:byCard?$('#suDoc').value:'',cardStatus:byCard?'pending':'approved'};
   save();enterApp();
@@ -748,7 +770,7 @@ function render(){
   const pen=S.penaltyUntil>Date.now();
   $('#penaltyBar').hidden=!pen;
   if(pen)$('#penaltyBar').textContent=`이용 정지 중: ${new Date(S.penaltyUntil).toLocaleDateString('ko-KR')}까지 미팅 신청이 막혀 있어요.`;
-  if(V.tab==='map'){renderChips();renderPins();renderSheet();}
+  if(V.tab==='map'){renderTeamBar();renderChips();renderPins();renderSheet();}
   if(V.tab==='lounge')renderLounge();
   if(V.tab==='meet')renderMeet();
   if(V.tab==='my')renderMy();
@@ -756,6 +778,12 @@ function render(){
 function visibleTeams(){
   return TEAMS.filter(t=>t.g===oppG()&&(V.loc==='all'||t.loc===V.loc)&&(V.size==='all'||t.size===+V.size)&&(!V.flash||t.flash)&&(!S.ind.length||t.m.some(x=>S.ind.includes(x[2]))));
 }
+function renderTeamBar(){
+  const el=$('#teamBar');if(!el)return;
+  el.innerHTML='<span class="lab">우리 팀</span>'+(S.teams.length?S.teams.map(t=>`<button class="tchip ${t.id===S.activeTeam?'on':''}" onclick="switchTeam('${t.id}')">${esc(t.name)} ${t.size}:${t.size}${t.status==='ready'?'':' ⏳'}</button>`).join(''):'<span class="muted" style="font-size:12.5px;flex:none">아직 없어요</span>')+(S.teams.length<MAX_TEAMS?'<button class="tchip add" onclick="openCreateTeam()">+ 새 팀</button>':'');
+}
+function switchTeam(id){S.activeTeam=id;const t=S.myTeam;V.size=String(t.size);save();render();toast(`‘${t.name}’ 팀으로 둘러봐요. ${t.size}:${t.size} 팀만 보여드려요.`);}
+function tName(tid){const t=S.teams.find(x=>x.id===tid);return t?` <span class="tag plum">${esc(t.name)}</span>`:'';}
 function renderChips(){
   const el=$('#chips'),sl=el.scrollLeft;
   const locs=[['all','모든 장소'],['company','🏢 회사 근처'],['home','🏠 집 근처'],['mid','📍 중간 지점']];
@@ -883,7 +911,7 @@ function requestMeeting(id){
 }
 function doRequest(id){
   const td=new Date().toDateString();if(S.reqDay!==td){S.reqDay=td;S.reqCount=0;}S.reqCount++;
-  S.meetings.unshift({id:uid(),teamId:id,dir:'out',status:'pending',msg:$('#reqMsg').value.trim(),at:Date.now()});
+  S.meetings.unshift({id:uid(),tid:S.activeTeam,teamId:id,dir:'out',status:'pending',msg:$('#reqMsg').value.trim(),at:Date.now()});
   save();closeModal();render();toast('신청을 보냈어요. 수락되면 ‘내 미팅’에서 결제하고 확정해요.');
 }
 
@@ -931,13 +959,14 @@ function toggleInd(el,i){const k=S.ind.indexOf(i);if(k<0)S.ind.push(i);else S.in
 /* ---------- 팀 만들기 ---------- */
 let ct=null;
 function openCreateTeam(force){
-  if(S.myTeam&&!force){confirmModal('새 팀을 만들까요?','지금 팀은 해체돼요. 이미 보낸 신청 내역은 남아 있어요.','새로 만들기',()=>openCreateTeam(true));return;}
-  ct={size:2,loc:'company',region:'',when:[],vibe:[],members:[],intro:'',flash:''};renderCT(true);
+  if(S.teams.length>=MAX_TEAMS){openModal(`<h3 class="m-title">팀은 최대 ${MAX_TEAMS}개까지예요</h3><p class="m-text">약속이 너무 많아지면 관리가 어렵고 노쇼로 이어지기 쉬워요. 새 팀을 만들려면 MY 탭에서 안 쓰는 팀을 해체해 주세요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal();setTab('my')">MY에서 팀 관리</button></div>`);return;}
+  ct={size:2,loc:'company',region:'',when:[],vibe:[],members:[],intro:'',flash:'',name:''};renderCT(true);
 }
 function ctCollect(){
   if(!ct)return;
   document.querySelectorAll('.mrow').forEach((row,i)=>{ct.members[i]={age:row.querySelector('.ct-age').value,job:row.querySelector('.ct-job').value,h:row.querySelector('.ct-h').value};});
   const it=$('#ctIntro');if(it)ct.intro=it.value;
+  const nm=$('#ctName');if(nm)ct.name=nm.value;
 }
 function ctSet(k,v){ctCollect();ct[k]=v;renderCT();}
 function ctToggle(k,v){ctCollect();const a=ct[k],i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderCT();}
@@ -945,6 +974,7 @@ function renderCT(first){
   const u=S.user,rows=[];
   for(let i=0;i<ct.size-1;i++){const m=ct.members[i]||{age:'',job:'',h:''};rows.push(`<div class="mrow h4"><span class="mav wait">${i+2}</span><input class="input ct-age" type="number" inputmode="numeric" placeholder="나이" value="${esc(m.age)}"><input class="input ct-job" placeholder="직무 (예: VC 심사역)" value="${esc(m.job)}"><input class="input ct-h" type="number" inputmode="numeric" placeholder="키(선택)" value="${esc(m.h||'')}"></div>`);}
   const html=`
+  <div class="sec"><h4>팀 이름</h4><input class="input" id="ctName" maxlength="12" placeholder="예: 회사 동기, 대학 친구" value="${esc(ct.name||'')}"><p class="hint">팀이 여러 개일 때 구분하는 이름이에요. 상대 팀에게는 보이지 않아요.</p></div>
   <div class="sec"><h4>몇 대 몇으로 만날까요?</h4><div class="seg">${[2,3,4].map(n=>`<button class="${ct.size===n?'on':''}" onclick="ctSet('size',${n})">${n}:${n}</button>`).join('')}</div></div>
   <div class="sec"><h4>어디서 만나고 싶어요?</h4><div class="seg">${Object.entries(LOC).map(([k,v])=>`<button class="${ct.loc===k?'on':''}" onclick="ctSet('loc','${k}')">${v.icon} ${v.label}</button>`).join('')}</div><p class="hint">${LOC[ct.loc].hint}</p></div>
   <div class="sec"><h4>희망 지역</h4><div class="picks">${REGIONS.map(r=>`<button class="chip ${ct.region===r.id?'on':''}" onclick="ctSet('region','${r.id}')">${r.name}</button>`).join('')}</div></div>
@@ -969,9 +999,9 @@ function ctSubmit(){
   if((ct.intro||'').trim().length<10)errs.push('팀 한마디를 10자 이상 써 주세요.');
   const e=$('#ctErr');e.hidden=!errs.length;e.textContent=errs.join(' ');
   if(errs.length){e.scrollIntoView({block:'center',behavior:'smooth'});return;}
-  S.myTeam={code:uid().padEnd(6,'0').slice(0,6),size:ct.size,loc:ct.loc,region:ct.region,when:ct.when.slice(),vibe:ct.vibe.slice(),intro:ct.intro.trim(),flash:ct.flash,
+  S.myTeam={name:(ct.name||'').trim()||(ct.size+':'+ct.size+' 팀'),code:uid().padEnd(6,'0').slice(0,6),size:ct.size,loc:ct.loc,region:ct.region,when:ct.when.slice(),vibe:ct.vibe.slice(),intro:ct.intro.trim(),flash:ct.flash,
     members:[{age:S.user.age,job:S.user.job,h:S.user.height||null,me:true,joined:true}].concat(ct.members.slice(0,ct.size-1).map(m=>({age:+m.age,job:m.job.trim(),h:m.h?+m.h:null,joined:false}))),status:'inviting'};
-  save();ct=null;render();openInvite();
+  V.size=String(ct.size);save();ct=null;render();openInvite();
 }
 function openInvite(){
   const t=S.myTeam;if(!t)return;
@@ -991,7 +1021,7 @@ function openInvite(){
 function demoJoinAll(){S.myTeam.members.forEach(m=>m.joined=true);S.myTeam.status='ready';addIncoming();save();render();openInvite();toast('팀이 열렸어요! 상대 팀에 신청할 수 있어요.');}
 function addIncoming(){
   const cand=TEAMS.filter(t=>t.g===oppG()&&t.size===S.myTeam.size&&!S.meetings.some(m=>m.teamId===t.id));
-  if(cand.length)S.meetings.unshift({id:uid(),teamId:cand[cand.length-1].id,dir:'in',status:'pending',sample:true,msg:'프로필 보고 신청했어요. 시간 맞춰 볼까요?',at:Date.now()});
+  if(cand.length)S.meetings.unshift({id:uid(),tid:S.activeTeam,teamId:cand[cand.length-1].id,dir:'in',status:'pending',sample:true,msg:'프로필 보고 신청했어요. 시간 맞춰 볼까요?',at:Date.now()});
 }
 
 /* ---------- 솔로 라운지 ---------- */
@@ -1050,8 +1080,8 @@ function sendChat(pid){
 }
 function confirmFromPost(pid,force){
   const p=findPost(pid);
-  if(S.myTeam&&!force){confirmModal('지금 팀 대신 이 멤버로 갈까요?','기존 팀은 해체돼요.','이 멤버로 확정',()=>confirmFromPost(pid,true));return;}
-  S.myTeam={code:uid().padEnd(6,'0').slice(0,6),size:p.size,loc:'mid',region:p.region,when:['주말 저녁'],vibe:['편한 대화'],intro:p.body,
+  if(S.teams.length>=MAX_TEAMS){toast(`팀은 최대 ${MAX_TEAMS}개까지예요. MY에서 안 쓰는 팀을 해체해 주세요.`);return;}
+  S.myTeam={name:'솔로 라운지 팀',code:uid().padEnd(6,'0').slice(0,6),size:p.size,loc:'mid',region:p.region,when:['주말 저녁'],vibe:['편한 대화'],intro:p.body,
     members:p.have.map(x=>({age:x[0],job:x[1],joined:true})).concat([{age:S.user.age,job:S.user.job,me:true,joined:true}]),status:'ready',fromLounge:true};
   addIncoming();save();closePanel();setTab('map');V.size=String(p.size);render();
   toast(`${p.size}:${p.size} 팀이 확정됐어요! 같은 인원의 이성 팀만 보여드려요.`);
@@ -1064,7 +1094,7 @@ function renderMeet(){
   const rest=S.meetings.filter(m=>!(m.dir==='in'&&m.status==='pending'));
   $('#meetBody').innerHTML=`<div class="head-block"><h2>내 미팅</h2><p>신청부터 일정 확정, 후기와 하트까지 여기서 이어져요.</p></div>
     ${S.dms.length?`<p class="group-title">💞 서로 하트 1:1 대화 ${S.dms.length}</p>`+S.dms.map(d=>{const lm=d.msgs[d.msgs.length-1];return `<article class="mcard"><span class="tag rose">서로 하트</span><h4>${esc(d.name)}</h4><p>${esc(lm.id?'카톡 ID를 공유했어요':lm.text)}</p><div class="acts"><button class="btn btn-primary btn-sm" onclick="openDM('${d.id}')">대화 열기</button></div></article>`;}).join(''):''}
-    ${!S.myTeam?`<div class="empty"><b>아직 팀이 없어요</b>팀이 있어야 신청을 보내고 받을 수 있어요.<div class="row"><button class="btn btn-ghost btn-sm" onclick="setTab('lounge')">솔로 라운지</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div></div>`:''}
+    ${!S.teams.length?`<div class="empty"><b>아직 팀이 없어요</b>팀이 있어야 신청을 보내고 받을 수 있어요.<div class="row"><button class="btn btn-ghost btn-sm" onclick="setTab('lounge')">솔로 라운지</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div></div>`:''}
     ${inc.length?`<p class="group-title">받은 신청 ${inc.length}</p>`+inc.map(meetCard).join(''):''}
     ${rest.length?`<p class="group-title">진행 상황</p>`+rest.map(meetCard).join(''):(S.myTeam&&!inc.length?'<div class="empty"><b>아직 진행 중인 미팅이 없어요</b>지도에서 마음에 드는 팀에 신청해 보세요.</div>':'')}
     <p class="group-title">약속을 지키기 위한 규칙</p>
@@ -1072,7 +1102,7 @@ function renderMeet(){
 }
 function meetCard(m){
   const t=teamById(m.teamId),r=regionById(t.region),[label,cls]=STATUS[m.status];
-  const head=`<span class="tag ${cls}">${m.dir==='in'&&m.status==='pending'?'우리 팀에 신청했어요':label}</span>${m.sample?' <span class="tag">샘플</span>':''}`;
+  const head=`<span class="tag ${cls}">${m.dir==='in'&&m.status==='pending'?'우리 팀에 신청했어요':label}</span>${m.sample?' <span class="tag">샘플</span>':''}${tName(m.tid)}`;
   let acts='';
   if(m.dir==='in'&&m.status==='pending')acts=`<button class="btn btn-ghost btn-sm" onclick="meetAct('${m.id}','decline')">거절</button><button class="btn btn-primary btn-sm" onclick="meetAct('${m.id}','accept')">수락하기</button>`;
   else if(m.status==='pending')acts=`<button class="btn btn-ghost btn-sm" onclick="meetAct('${m.id}','withdraw')">신청 취소</button><button class="btn btn-line btn-sm" onclick="meetAct('${m.id}','demoAccept')">데모: 상대가 수락</button>`;
@@ -1091,6 +1121,8 @@ function meetCard(m){
   return `<article class="mcard">${head}<h4>${t.m.map(x=>`${esc(x[1])} ${x[0]}`).join(', ')}</h4><p>${gLabel(t.g)} ${t.size}:${t.size}, ${esc(r.name)}, ${LOC[t.loc].label}</p>${m.msg?`<p class="quote" style="font-size:14px;margin:10px 0 0">“${esc(m.msg)}”</p>`:''}${info}${pendNote}${acts?`<div class="acts">${acts}</div>`:''}</article>`;
 }
 function meet(id){return S.meetings.find(m=>m.id===id);}
+let schForce='';
+function conflict(ts,ex){return S.meetings.find(m=>m.id!==ex&&m.status==='scheduled'&&Math.abs(m.date-ts)<3*36e5);}
 const fmtD=d=>new Date(d).toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});
 
 /* ---------- 하트 & 1:1 대화 ---------- */
@@ -1149,7 +1181,7 @@ let gm={mode:'balance',idx:-1,mid:null};
 function openGames(mid){gm={mode:'balance',idx:-1,mid:mid||null};renderGame();}
 function seatHtml(){
   const m=meet(gm.mid),t=teamById(m.teamId);
-  const mine=S.myTeam?S.myTeam.members.map(x=>x.me?'나':x.job):['나'];
+  const mt=S.teams.find(x=>x.id===m.tid)||S.myTeam;const mine=mt?mt.members.map(x=>x.me?'나':x.job):['나'];
   const sh=a=>a.map(v=>[Math.random(),v]).sort((p,q)=>p[0]-q[0]).map(v=>v[1]);
   const A=sh(mine.slice()),B=sh(t.m.map(x=>x[1]));let rows='';
   for(let i=0;i<Math.min(A.length,B.length);i++)rows+=`<div class="vs" style="margin:4px 0"><span>${esc(A[i])}</span><i>♥</i><span>${esc(B[i])}</span></div>`;
@@ -1195,6 +1227,8 @@ function saveSchedule(id){
   const m=meet(id),dv=$('#schDate').value,pl=$('#schPlace').value.trim(),ts=new Date(dv).getTime();
   const e=$('#schErr'),msg=!dv||isNaN(ts)?'날짜를 골라 주세요.':ts<Date.now()?'지난 시간은 고를 수 없어요.':pl.length<2?'장소를 입력해 주세요.':'';
   e.hidden=!msg;e.textContent=msg;if(msg)return;
+  const cf=conflict(ts,id);
+  if(cf&&schForce!==id+'|'+ts){schForce=id+'|'+ts;e.hidden=false;e.textContent=`⚠️ 앞뒤 3시간 안에 다른 미팅(${fmtD(cf.date)})이 있어요. 두 미팅이 겹치면 노쇼로 이어질 수 있어요. 그래도 확정하려면 한 번 더 눌러 주세요.`;return;}
   m.status='scheduled';m.date=ts;m.place=pl;save();closeModal();render();toast('미팅이 확정됐어요. 회사명이 서로 공개됐어요.');
 }
 function cancelScheduled(id){
@@ -1220,6 +1254,8 @@ function sendReschedule(id){
   const m=meet(id),ts=new Date($('#rsDate').value).getTime(),pl=$('#rsPlace').value.trim();
   const msg=isNaN(ts)?'날짜를 골라 주세요.':ts<Date.now()?'지난 시간은 고를 수 없어요.':pl.length<2?'장소를 입력해 주세요.':'';
   $('#rsErr').hidden=!msg;$('#rsErr').textContent=msg;if(msg)return;
+  const cf=conflict(ts,id);
+  if(cf&&schForce!==id+'|'+ts){schForce=id+'|'+ts;$('#rsErr').hidden=false;$('#rsErr').textContent=`⚠️ 앞뒤 3시간 안에 다른 미팅(${fmtD(cf.date)})이 있어요. 그래도 요청하려면 한 번 더 눌러 주세요.`;return;}
   m.change={date:ts,place:pl};m.cancelReq=false;save();closeModal();render();toast('변경 요청을 보냈어요. 상대 팀이 동의하면 바로 바뀌어요.');
 }
 function agreeChange(id){const m=meet(id);m.date=m.change.date;m.place=m.change.place;delete m.change;save();render();toast('상대 팀이 동의해서 일정이 바뀌었어요 (데모).');}
@@ -1277,10 +1313,10 @@ function renderMy(){
   $('#myBody').innerHTML=`<div class="profile"><div class="avatar">${esc(u.nick.slice(0,1))}</div><div><b>${esc(u.nick)}</b><small>${u.age}세 ${gLabel(u.g)}, ${esc(u.ind)}</small><small>${esc(u.company)} ${esc(u.job)}</small><small style="color:${vPending(u)?'var(--warn)':'var(--ok)'};font-weight:600">${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</small>${vPending(u)?'<button class="btn btn-line btn-xs" style="margin-top:6px" onclick="approveCard()">데모: 운영팀 승인 처리</button>':''}</div></div>
     <div class="stats"><div><b>${leftToday()}/${dayLimit()}</b><small>오늘 무료 신청</small></div><div><b>${S.manner}°</b><small>매너 온도</small></div><div><b>${S.premium?'이용 중':'없음'}</b><small>프리미엄</small></div></div>
     <button class="btn btn-primary" style="margin-bottom:12px" onclick="openPricing()">요금 안내·프리미엄</button>
-    <div class="box"><h4>우리 팀 ${t?`<span class="tag ${t.status==='ready'?'ok':'warn'}">${t.status==='ready'?'활성':'인증 대기'}</span>`:''}</h4>
-      ${t?`<p style="font-size:14px">${t.size}:${t.size}, ${LOC[t.loc].label}, ${esc(regionById(t.region).name)}${t.flash?`, ⚡ 오늘 ${t.flash} 번개`:''}${myAvgH()?`, 평균 키 ${myAvgH()}cm`:''}</p><p class="muted" style="font-size:13px">${t.members.map(m=>`${esc(m.job)} ${m.age}${m.joined?'':' (대기)'}`).join(', ')}</p>
-        <div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="disbandTeam()">팀 해체</button><button class="btn btn-ink btn-sm" onclick="openInvite()">${t.status==='ready'?'팀 정보·링크':'초대 링크 보내기'}</button></div>`
-      :`<p class="muted" style="font-size:13.5px">아직 팀이 없어요.</p><div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="setTab('lounge')">솔로 라운지</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div>`}
+    <div class="box"><h4>우리 팀 <span class="muted" style="font-size:13px">${S.teams.length}/${MAX_TEAMS}</span></h4>
+      ${S.teams.length?S.teams.map(t=>`<div class="team-row ${t.id===S.activeTeam?'on':''}"><div><b>${esc(t.name)}</b> <span class="tag ${t.status==='ready'?'ok':'warn'}">${t.status==='ready'?'활성':'인증 대기'}</span>${t.id===S.activeTeam?' <span class="tag rose">지금 둘러보는 팀</span>':''}<p style="font-size:13.5px;margin-top:4px">${t.size}:${t.size}, ${LOC[t.loc].label}, ${esc(regionById(t.region).name)}${t.flash?`, ⚡ 오늘 ${t.flash}`:''}${myAvgH(t)?`, 평균 키 ${myAvgH(t)}cm`:''}</p><p class="muted" style="font-size:12.5px">${t.members.map(m=>`${esc(m.job)} ${m.age}${m.joined?'':' (대기)'}`).join(', ')}</p></div>
+        <div class="row" style="margin-top:10px"><button class="btn btn-ghost btn-xs" onclick="disbandTeam('${t.id}')">해체</button><button class="btn btn-line btn-xs" onclick="S.activeTeam='${t.id}';save();openInvite()">${t.status==='ready'?'팀 정보·링크':'초대 링크'}</button>${t.id===S.activeTeam?'':`<button class="btn btn-ink btn-xs" onclick="switchTeam('${t.id}')">이 팀 선택</button>`}</div></div>`).join(''):'<p class="muted" style="font-size:13.5px">아직 팀이 없어요.</p>'}
+      ${S.teams.length<MAX_TEAMS?`<div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="setTab('lounge')">솔로 라운지</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">+ 새 팀 만들기</button></div>`:`<p class="hint">팀은 최대 ${MAX_TEAMS}개까지 만들 수 있어요.</p>`}
     </div>
     <div class="box"><h4>미팅 도구</h4><button class="list-btn" onclick="openGames()">🎲 랜덤 게임 (밸런스·대화 주제·벌칙)<span class="muted">›</span></button></div>
     <div class="box"><h4>안심 센터</h4>
@@ -1290,10 +1326,10 @@ function renderMy(){
     </div>
     <div class="box"><h4>시연용</h4><p class="muted" style="font-size:13px;margin-bottom:10px">이 프로토타입은 데이터를 이 기기 브라우저에만 저장해요.</p><button class="btn btn-line btn-sm" onclick="resetAll()">데모 데이터 지우고 처음부터</button></div>`;
 }
-function myAvgH(){const t=S.myTeam;if(!t)return 0;const hs=t.members.map(m=>m.h).filter(Boolean);return hs.length?Math.round(hs.reduce((a,b)=>a+b,0)/hs.length):0;}
+function myAvgH(t){t=t||S.myTeam;if(!t)return 0;const hs=t.members.map(m=>m.h).filter(Boolean);return hs.length?Math.round(hs.reduce((a,b)=>a+b,0)/hs.length):0;}
 function approveCard(){S.user.cardStatus='approved';save();render();toast('재직 인증이 승인됐어요 (데모).');}
-function disbandTeam(){confirmModal('팀을 해체할까요?','팀원들에게도 해체 알림이 가요. 보낸 신청 내역은 남아요.','해체하기',()=>{S.myTeam=null;save();render();toast('팀을 해체했어요.');},true);}
-function resetAll(){confirmModal('처음부터 다시 볼까요?','가입 정보, 팀, 신청 내역이 모두 지워져요.','모두 지우기',()=>{try{localStorage.removeItem(KEY);}catch(e){}S=fresh();V.region=null;V.loc='all';V.size='all';go('screen-landing');},true);}
+function disbandTeam(id){const t=S.teams.find(x=>x.id===id)||S.myTeam;if(!t)return;confirmModal(`‘${esc(t.name)}’ 팀을 해체할까요?`,'팀원들에게도 해체 알림이 가요. 보낸 신청 내역은 남아요.','해체하기',()=>{S.teams=S.teams.filter(x=>x.id!==t.id);if(S.activeTeam===t.id)S.activeTeam=S.teams[0]?S.teams[0].id:null;save();render();toast('팀을 해체했어요.');},true);}
+function resetAll(){confirmModal('처음부터 다시 볼까요?','가입 정보, 팀, 신청 내역이 모두 지워져요.','모두 지우기',()=>{try{localStorage.removeItem(KEY);}catch(e){}S=wrap(fresh());V.region=null;V.loc='all';V.size='all';go('screen-landing');},true);}
 
 /* ---------- 시작 ---------- */
 (function boot(){
