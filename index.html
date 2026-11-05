@@ -13,6 +13,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="600">
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700;800&family=Nanum+Pen+Script&family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -477,7 +478,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
         <label><input type="checkbox" class="ag" onchange="syncAgree()">[필수] 노쇼·비매너 제재 정책</label>
       </div>
       <p class="err" id="err-submit" hidden style="margin-bottom:10px"></p>
-      <button class="btn btn-primary" onclick="suSubmit()">가입하고 지도 보기</button>
+      <button class="btn btn-primary" id="suBtn" onclick="suSubmit()">가입하고 지도 보기</button>
     </div>
   </section>
 
@@ -686,6 +687,26 @@ function copyText(s,msg){
   try{navigator.clipboard.writeText(s).then(done,fallback);}catch(e){fallback();}
 }
 
+/* ---------- 장부(Supabase) ---------- */
+const SB_URL='https://cyciacmcnmwobqfcemhu.supabase.co';
+const SB_KEY='sb_publishable_PT5DYvc-37NWzTw_8AOcnA_bGTEp35i';
+let sb=null;
+const SB_ON=/(^|\.)pages\.dev$|^localhost$|bizzmeet/.test(location.hostname);
+try{if(window.supabase&&SB_ON)sb=window.supabase.createClient(SB_URL,SB_KEY);}catch(e){sb=null;}
+async function saveProfileToDB(u){
+  if(!sb)return{ok:false,skip:true};
+  try{
+    let {data:{session}}=await sb.auth.getSession();
+    if(!session){const r=await sb.auth.signInAnonymously();if(r.error)return{ok:false,msg:r.error.message};session=r.data.session;}
+    const id=session.user.id;
+    const row={id,nickname:u.nick,age:u.age,gender:u.g,height:u.height||null,company:u.company,job:u.job,industry:u.ind,verify_method:u.method==='card'?'card':'email'};
+    let {error}=await sb.from('profiles').insert(row);
+    if(error&&error.code==='23505'){({error}=await sb.from('profiles').update({nickname:u.nick,height:u.height||null,job:u.job,industry:u.ind}).eq('id',id));}
+    if(error)return{ok:false,msg:error.message};
+    return{ok:true,id};
+  }catch(e){return{ok:false,msg:String(e&&e.message||e)};}
+}
+
 /* ---------- 회원가입 ---------- */
 const su={g:'F',method:'email',code:null,exp:0,email:'',verified:false,file:null};
 function setSuMethod(v){su.method=v;document.querySelectorAll('#suMethod button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#emailPart').hidden=v!=='email';$('#cardPart').hidden=v!=='card';}
@@ -715,7 +736,7 @@ function suVerify(){
 }
 function agreeAll(v){document.querySelectorAll('.ag').forEach(c=>c.checked=v);}
 function syncAgree(){$('#agAll').checked=[...document.querySelectorAll('.ag')].every(c=>c.checked);}
-function suSubmit(){
+async function suSubmit(){
   const nick=$('#suNick').value.trim(),age=+$('#suAge').value,company=$('#suCompany').value.trim(),job=$('#suJob').value.trim();
   let ok=true;
   ok=fieldErr('suNick',nick.length<2?'닉네임은 2자 이상이에요.':'')&&ok;
@@ -732,9 +753,14 @@ function suSubmit(){
   const agreed=[...document.querySelectorAll('.ag')].every(c=>c.checked);
   fieldErr('submit',!agreed?'필수 약관에 모두 동의해 주세요.':(!ok?'빨간 글씨 항목을 확인해 주세요.':''));
   if(!ok||!agreed)return;
-  S=wrap(fresh());
   const byCard=su.method==='card';
-  S.user={nick,age,height:hgt,g:su.g,company,job,ind:$('#suInd').value,method:su.method,email:byCard?'':su.email,domain:byCard?'':su.email.split('@')[1],doc:byCard?$('#suDoc').value:'',cardStatus:byCard?'pending':'approved'};
+  const user={nick,age,height:hgt,g:su.g,company,job,ind:$('#suInd').value,method:su.method,email:byCard?'':su.email,domain:byCard?'':su.email.split('@')[1],doc:byCard?$('#suDoc').value:'',cardStatus:byCard?'pending':'approved'};
+  const btn=$('#suBtn');btn.disabled=true;btn.textContent='장부에 저장하는 중…';
+  const res=await saveProfileToDB(user);
+  btn.disabled=false;btn.textContent='가입하고 지도 보기';
+  if(!res.ok&&!res.skip){fieldErr('submit','장부 저장에 실패했어요: '+res.msg);return;}
+  if(res.ok)user.dbId=res.id;
+  S=wrap(fresh());S.user=user;
   save();enterApp();
   toast(byCard?`${nick}님, 환영해요! 서류 확인이 끝나면 미팅 신청이 열려요.`:`${nick}님, 환영해요! 신청은 무료, 미팅이 성사될 때만 결제해요.`);
 }
@@ -1377,7 +1403,7 @@ function openPolicy(){
 /* ---------- MY ---------- */
 function renderMy(){
   const u=S.user,t=S.myTeam;
-  $('#myBody').innerHTML=`<div class="profile"><div class="avatar">${esc(u.nick.slice(0,1))}</div><div><b>${esc(u.nick)}</b><small>${u.age}세 ${gLabel(u.g)}, ${esc(u.ind)}</small><small>${esc(u.company)} ${esc(u.job)}</small><small style="color:${vPending(u)?'var(--warn)':'var(--ok)'};font-weight:600">${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</small>${vPending(u)?'<button class="btn btn-line btn-xs" style="margin-top:6px" onclick="approveCard()">데모: 운영팀 승인 처리</button>':''}</div></div>
+  $('#myBody').innerHTML=`<div class="profile"><div class="avatar">${esc(u.nick.slice(0,1))}</div><div><b>${esc(u.nick)}</b><small>${u.age}세 ${gLabel(u.g)}, ${esc(u.ind)}</small><small>${esc(u.company)} ${esc(u.job)}</small>${u.dbId?'<small style="color:var(--ok);font-weight:600">☁️ 회원 정보가 장부에 저장돼 있어요</small>':'<small class="muted">이 기기에만 저장된 데모 회원이에요</small>'}<small style="color:${vPending(u)?'var(--warn)':'var(--ok)'};font-weight:600">${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</small>${vPending(u)?'<button class="btn btn-line btn-xs" style="margin-top:6px" onclick="approveCard()">데모: 운영팀 승인 처리</button>':''}</div></div>
     <div class="stats"><div><b>${leftToday()}/${dayLimit()}</b><small>오늘 무료 신청</small></div><div><b>${S.manner}°</b><small>매너 온도</small></div><div><b>${S.premium?'이용 중':'없음'}</b><small>프리미엄</small></div></div>
     <button class="btn btn-primary" style="margin-bottom:12px" onclick="openPricing()">요금 안내·프리미엄</button>
     <div class="box"><h4>우리 팀 <span class="muted" style="font-size:13px">${S.teams.length}/${MAX_TEAMS}</span></h4>
@@ -1396,7 +1422,7 @@ function renderMy(){
 function myAvgH(t){t=t||S.myTeam;if(!t)return 0;const hs=t.members.map(m=>m.h).filter(Boolean);return hs.length?Math.round(hs.reduce((a,b)=>a+b,0)/hs.length):0;}
 function approveCard(){S.user.cardStatus='approved';save();render();toast('재직 인증이 승인됐어요 (데모).');}
 function disbandTeam(id){const t=S.teams.find(x=>x.id===id)||S.myTeam;if(!t)return;confirmModal(`‘${esc(t.name)}’ 팀을 해체할까요?`,'팀원들에게도 해체 알림이 가요. 보낸 신청 내역은 남아요.','해체하기',()=>{S.teams=S.teams.filter(x=>x.id!==t.id);if(S.activeTeam===t.id)S.activeTeam=S.teams[0]?S.teams[0].id:null;save();render();toast('팀을 해체했어요.');},true);}
-function resetAll(){confirmModal('처음부터 다시 볼까요?','가입 정보, 팀, 신청 내역이 모두 지워져요.','모두 지우기',()=>{try{localStorage.removeItem(KEY);}catch(e){}S=wrap(fresh());V.region=null;V.loc='all';V.size='all';go('screen-landing');},true);}
+function resetAll(){confirmModal('처음부터 다시 볼까요?','가입 정보, 팀, 신청 내역이 모두 지워져요.','모두 지우기',()=>{try{localStorage.removeItem(KEY);}catch(e){}try{if(sb)sb.auth.signOut();}catch(e){}S=wrap(fresh());V.region=null;V.loc='all';V.size='all';go('screen-landing');},true);}
 
 /* ---------- 시작 ---------- */
 (function boot(){
