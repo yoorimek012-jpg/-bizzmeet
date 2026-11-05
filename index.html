@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="소개팅은 부담, 미팅은 설렘. – BizzMeet">
 <meta property="og:description" content="여러 명이 함께라 더 즐거운, 재직 인증된 직장인 팀 미팅">
-<meta property="og:image" content="https://bizzmeet.vercel.app/kakao-share-v2.jpg">
+<meta property="og:image" content="https://bizzmeet.pages.dev/kakao-share-v2.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="600">
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous"></script>
@@ -343,6 +343,14 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
 .box h4,.sec h4{font-size:17px}
 .panel-head h3{font-size:18px}
 .pcard h4,.mcard h4{font-size:17px}
+.searchbar{display:flex;gap:8px;padding:9px 14px 0;background:var(--surface);flex:none}
+.sbox{flex:1;display:flex;align-items:center;gap:6px;height:42px;border-radius:12px;background:var(--surface-2);padding:0 12px;min-width:0}
+.sbox svg{width:17px;height:17px;flex:none;color:var(--muted)}
+.sbox input{flex:1;border:0;background:none;outline:none;font-size:16px;min-width:0;color:var(--text)}
+.sbox input::placeholder{color:var(--muted);font-size:14px}
+.fbtn{flex:none;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);padding:0 12px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.fbtn.on{border-color:var(--rose);color:var(--rose)}
+.fbtn .n{background:var(--rose);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px}
 .teambar{display:flex;gap:6px;align-items:center;overflow-x:auto;padding:9px 14px 0;background:var(--surface);flex:none;scrollbar-width:none}
 .teambar::-webkit-scrollbar{display:none}
 .teambar .lab{font-size:12px;color:var(--muted);flex:none;font-weight:600;margin-right:2px}
@@ -486,6 +494,7 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
       <!-- 지도 -->
       <div class="view on" id="view-map">
         <div class="teambar" id="teamBar"></div>
+        <div class="searchbar"><label class="sbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="직무·업종 검색 (예: 개발, 외국계)" oninput="V.q=this.value;renderPins();renderSheet();renderSearch()" aria-label="팀 검색"></label><button class="fbtn" id="fbtn" onclick="openFilter()">필터<span class="n" id="fcount" hidden></span></button></div>
         <div class="chips" id="chips"></div>
         <div class="map-area" id="mapArea">
           <div class="map-wrap" id="mapWrap">
@@ -605,6 +614,13 @@ const PKGS=[
 const HEIGHTS={f1:[163,165],f2:[160,167],f3:[162,158,166],f5:[164,161,168,163],f6:[166,162],f8:[159,163,161],f9:[167,162],m1:[178,175],m2:[181,176],m3:[174,179,177],m5:[176,172,180],m6:[175,178,173,182],m7:[180,177],m8:[176,179,174],m9:[183,176,178,179]};
 const FLASH={f1:'20:00',f2:'21:00',f7:'19:30',m1:'20:30',m4:'19:00',m7:'21:00',m3:'20:00'};
 TEAMS.forEach(t=>{if(HEIGHTS[t.id])t.h=HEIGHTS[t.id];if(FLASH[t.id])t.flash=FLASH[t.id];});
+const CTYPE={f1:['대기업','금융사'],f2:['대기업','스타트업'],f3:['중견·중소','대기업','전문직'],f4:['금융사','금융사','스타트업'],f5:['중견·중소','외국계','전문직','중견·중소'],f6:['공공기관','중견·중소'],f7:['스타트업','중견·중소'],f8:['외국계','공공기관','전문직'],f9:['외국계','대기업'],m1:['대기업','외국계'],m2:['금융사','전문직'],m3:['대기업','대기업','스타트업'],m4:['대기업','외국계'],m5:['중견·중소','스타트업','중견·중소'],m6:['중견·중소','중견·중소','스타트업','중견·중소'],m7:['공공기관','전문직'],m8:['대기업','금융사','전문직'],m9:['스타트업','금융사','중견·중소','전문직']};
+TEAMS.forEach(t=>{const c=CTYPE[t.id];if(c)t.m.forEach((x,i)=>{x[3]=c[i]||c[0];});});
+const CTYPES=['대기업','중견·중소','스타트업','외국계','공공기관','금융사','전문직'];
+const AGE_BANDS=[['24~27세',0,27.49],['28~30세',27.5,30.49],['31~33세',30.5,33.49],['34세 이상',33.5,99]];
+const H_BANDS=[['160 미만',0,159.9],['160~165',160,165.9],['166~170',166,170.9],['171~175',171,175.9],['176~180',176,180.9],['181 이상',181,999]];
+const VIBE_ALL=[...new Set(TEAMS.flatMap(t=>t.vibe))];
+const avgNum=t=>t.m.reduce((a,x)=>a+x[0],0)/t.m.length;
 const avgH=t=>Math.round(t.h.reduce((a,b)=>a+b,0)/t.h.length);
 const GAMES={
   balance:[['평생 라면 끊기','평생 치킨 끊기'],['연락 자주 하는 애인','만나면 잘해주는 애인'],['월급 2배 + 주 6일','지금 월급 + 주 4일'],['첫 데이트 파인다이닝','첫 데이트 포장마차'],['여행은 계획파','여행은 즉흥파'],['아침형 인간','올빼미형 인간'],['강아지','고양이'],['퇴근 후 운동','퇴근 후 넷플릭스'],['평생 봄만','평생 가을만'],['깻잎 떼어주기 괜찮다','깻잎 떼어주기 안 된다'],['카톡 답장 빠른 사람','전화 자주 하는 사람'],['바다 여행','산 여행']],
@@ -632,7 +648,7 @@ function wrap(o){
   return o;
 }
 let S=wrap(load());
-const V={tab:'map',loc:'all',size:'all',region:null,flash:false};
+const V={tab:'map',loc:'all',size:'all',region:null,flash:false,q:'',ages:[],heights:[],vibes:[],ctype:[]};
 
 /* ---------- 유틸 ---------- */
 const $=s=>document.querySelector(s);
@@ -723,7 +739,7 @@ function inviteBase(){return location.href.split('#')[0];}
 function inviteLink(){const t=S.myTeam;return `${inviteBase()}#join-${t.size}-${t.region}-${t.code}`;}
 function inviteText(){const t=S.myTeam,r=regionById(t.region);return `[BizzMeet] ${S.user.nick}님이 ${t.size}:${t.size} 미팅 팀(${r.name})에 초대했어요 💌 링크를 열고 재직 인증만 하면 바로 합류돼요.`;}
 const KAKAO_JS_KEY='3995f0d825be19670c09e3a46eb5a569';
-const SHARE_IMG='https://bizzmeet.vercel.app/kakao-share-v2.jpg';
+const SHARE_IMG=(location.protocol.startsWith('http')?location.origin:'https://bizzmeet.pages.dev')+'/kakao-share-v2.jpg';
 function kakaoReady(){try{if(!window.Kakao)return false;if(!Kakao.isInitialized())Kakao.init(KAKAO_JS_KEY);return Kakao.isInitialized();}catch(e){return false;}}
 function shareKakao(){
   const url=inviteLink(),t=S.myTeam,r=regionById(t.region);
@@ -770,14 +786,45 @@ function render(){
   const pen=S.penaltyUntil>Date.now();
   $('#penaltyBar').hidden=!pen;
   if(pen)$('#penaltyBar').textContent=`이용 정지 중: ${new Date(S.penaltyUntil).toLocaleDateString('ko-KR')}까지 미팅 신청이 막혀 있어요.`;
-  if(V.tab==='map'){renderTeamBar();renderChips();renderPins();renderSheet();}
+  if(V.tab==='map'){renderTeamBar();renderSearch();renderChips();renderPins();renderSheet();}
   if(V.tab==='lounge')renderLounge();
   if(V.tab==='meet')renderMeet();
   if(V.tab==='my')renderMy();
 }
-function visibleTeams(){
-  return TEAMS.filter(t=>t.g===oppG()&&(V.loc==='all'||t.loc===V.loc)&&(V.size==='all'||t.size===+V.size)&&(!V.flash||t.flash)&&(!S.ind.length||t.m.some(x=>S.ind.includes(x[2]))));
+function baseOk(t){return t.g===oppG()&&(V.loc==='all'||t.loc===V.loc)&&(V.size==='all'||t.size===+V.size)&&(!V.flash||t.flash);}
+function passFilters(t,f){
+  const q=(f.q||'').trim().toLowerCase();
+  if(q){const hay=[t.m.map(x=>x[1]+' '+x[2]+' '+(x[3]||'')).join(' '),t.vibe.join(' '),t.intro||'',regionById(t.region).name,t.when].join(' ').toLowerCase();if(!q.split(/\s+/).every(w=>hay.includes(w)))return false;}
+  const a=avgNum(t);if(f.ages.length&&!f.ages.some(i=>a>=AGE_BANDS[i][1]&&a<=AGE_BANDS[i][2]))return false;
+  if(f.heights.length){if(!t.h)return false;const h=avgH(t);if(!f.heights.some(i=>h>=H_BANDS[i][1]&&h<=H_BANDS[i][2]))return false;}
+  if(f.vibes.length&&!t.vibe.some(v=>f.vibes.includes(v)))return false;
+  if(f.ctype.length&&!t.m.some(x=>f.ctype.includes(x[3])))return false;
+  if(f.ind.length&&!t.m.some(x=>f.ind.includes(x[2])))return false;
+  return true;
 }
+function curFilter(){return{q:V.q,ages:V.ages,heights:V.heights,vibes:V.vibes,ctype:S.premium?V.ctype:[],ind:S.premium?S.ind:[]};}
+function activeFilterCount(){const f=curFilter();return[f.ages,f.heights,f.vibes,f.ctype,f.ind].filter(a=>a.length).length;}
+function visibleTeams(){const f=curFilter();return TEAMS.filter(t=>baseOk(t)&&passFilters(t,f));}
+function clearFilters(){V.q='';V.ages=[];V.heights=[];V.vibes=[];V.ctype=[];S.ind=[];V.loc='all';V.size='all';V.flash=false;const q=$('#q');if(q)q.value='';save();render();}
+function renderSearch(){const n=activeFilterCount(),c=$('#fcount');if(!c)return;c.hidden=!n;c.textContent=n;$('#fbtn').classList.toggle('on',n>0);}
+let F=null;
+function openFilter(){F={ages:[...V.ages],heights:[...V.heights],vibes:[...V.vibes],ctype:[...V.ctype],ind:[...S.ind]};openModal('<div id="fBody"></div>');renderFilter();}
+function fChip(g,v,label,locked){const on=F[g].includes(v);const arg=typeof v==='number'?v:`'${v}'`;return `<button class="chip ${on?'on':''}" onclick="fToggle('${g}',${arg},${locked?1:0})">${locked&&!S.premium?'🔒 ':''}${label}</button>`;}
+function fToggle(g,v,locked){if(locked&&!S.premium){closeModal();openStore('회사 유형·업종 필터는 프리미엄 기능이에요');return;}const a=F[g],i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);renderFilter();}
+function renderFilter(){
+  const f={q:V.q,ages:F.ages,heights:F.heights,vibes:F.vibes,ctype:S.premium?F.ctype:[],ind:S.premium?F.ind:[]};
+  const n=TEAMS.filter(t=>baseOk(t)&&passFilters(t,f)).length;
+  const prem=S.premium?'':' <span class="tag rose" style="font-family:var(--sans);font-size:11px">프리미엄</span>';
+  $('#fBody').innerHTML=`<h3 class="m-title">원하는 팀 찾기</h3>
+    <div class="sec"><h4>평균 나이</h4><div class="picks">${AGE_BANDS.map((b,i)=>fChip('ages',i,b[0])).join('')}</div></div>
+    <div class="sec"><h4>평균 키</h4><div class="picks">${H_BANDS.map((b,i)=>fChip('heights',i,b[0]+'cm')).join('')}</div><p class="hint">키를 입력한 팀만 대상이에요. 개인 키는 공개되지 않아요.</p></div>
+    <div class="sec"><h4>분위기</h4><div class="picks">${VIBE_ALL.map(v=>fChip('vibes',v,v)).join('')}</div></div>
+    <div class="sec"><h4>회사 유형${prem}</h4><div class="picks">${CTYPES.map(v=>fChip('ctype',v,v,true)).join('')}</div></div>
+    <div class="sec"><h4>업종${prem}</h4><div class="picks">${INDUSTRIES.map(v=>fChip('ind',v,v,true)).join('')}</div></div>
+    <p class="note">회사 이름은 미팅이 확정되기 전까지 공개하지 않아요. 대신 회사 유형과 업종으로 찾을 수 있어요.</p>
+    <div class="m-actions"><button class="btn btn-ghost" onclick="F={ages:[],heights:[],vibes:[],ctype:[],ind:[]};renderFilter()">초기화</button><button class="btn btn-primary" onclick="fApply()">${n}팀 보기</button></div>`;
+}
+function fApply(){V.ages=F.ages;V.heights=F.heights;V.vibes=F.vibes;V.ctype=F.ctype;S.ind=F.ind;save();closeModal();render();}
 function renderTeamBar(){
   const el=$('#teamBar');if(!el)return;
   el.innerHTML='<span class="lab">우리 팀</span>'+(S.teams.length?S.teams.map(t=>`<button class="tchip ${t.id===S.activeTeam?'on':''}" onclick="switchTeam('${t.id}')">${esc(t.name)} ${t.size}:${t.size}${t.status==='ready'?'':' ⏳'}</button>`).join(''):'<span class="muted" style="font-size:12.5px;flex:none">아직 없어요</span>')+(S.teams.length<MAX_TEAMS?'<button class="tchip add" onclick="openCreateTeam()">+ 새 팀</button>':'');
@@ -791,8 +838,7 @@ function renderChips(){
   el.innerHTML=`<button class="chip flash ${V.flash?'on':''}" onclick="V.flash=!V.flash;render()">⚡ 오늘 번개</button><span class="chip-sep"></span>`+locs.map(([v,l])=>`<button class="chip ${V.loc===v?'on':''}" onclick="V.loc='${v}';render()">${l}</button>`).join('')
     +'<span class="chip-sep"></span>'
     +sizes.map(([v,l])=>`<button class="chip ${V.size===v?'on':''}" onclick="V.size='${v}';render()">${l}</button>`).join('')
-    +'<span class="chip-sep"></span>'
-    +`<button class="chip prem ${S.ind.length?'on':''}" onclick="openIndustry()">${S.premium?'💼':'🔒'} 업종 지정${S.ind.length?' '+S.ind.length:''}</button>`;
+    ;
   el.scrollLeft=sl;
 }
 
@@ -880,9 +926,9 @@ function renderSheet(){
   let list=visibleTeams();const r=V.region&&regionById(V.region);
   if(r)list=list.filter(t=>t.region===r.id);
   $('#sheetTitle').innerHTML=r?`${esc(r.name)} <span class="muted">${list.length}팀</span>`:`만남을 기다리는 ${gLabel(oppG())} 팀 <span class="muted">${list.length}팀</span>`;
-  $('#sheetSub').textContent=r?'이 지역에서 만나고 싶어 하는 팀이에요.':'지도에서 지역을 누르면 그 지역 팀만 볼 수 있어요.';
+  const fc=activeFilterCount()+(V.q.trim()?1:0);$('#sheetSub').innerHTML=fc?`검색·필터 ${fc}개 적용 중 <button class="linkbtn" style="font-size:12.5px;padding:0 0 0 4px" onclick="clearFilters()">모두 해제</button>`:(r?'이 지역에서 만나고 싶어 하는 팀이에요.':'지도에서 지역을 누르면 그 지역 팀만 볼 수 있어요.');
   $('#sheetReset').hidden=!r;
-  $('#sheetList').innerHTML=list.length?list.map(teamCard).join(''):`<div class="empty"><b>조건에 맞는 팀이 아직 없어요</b>필터를 바꾸거나, 우리 팀을 먼저 올려 두면 상대가 신청할 수 있어요.<div class="row"><button class="btn btn-ghost btn-sm" onclick="V.loc='all';V.size='all';S.ind=[];save();render()">필터 초기화</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div></div>`;
+  $('#sheetList').innerHTML=list.length?list.map(teamCard).join(''):`<div class="empty"><b>조건에 맞는 팀이 아직 없어요</b>필터를 바꾸거나, 우리 팀을 먼저 올려 두면 상대가 신청할 수 있어요.<div class="row"><button class="btn btn-ghost btn-sm" onclick="clearFilters()">필터 초기화</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">팀 만들기</button></div></div>`;
 }
 
 /* ---------- 팀 상세 & 신청 ---------- */
@@ -890,7 +936,7 @@ function openTeam(id){
   const t=teamById(id),r=regionById(t.region);
   openModal(`<div class="tc-top" style="margin-top:6px"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span><span class="tag">${LOC[t.loc].icon} ${LOC[t.loc].label}</span>${t.flash?`<span class="tag flash">⚡ 오늘 ${t.flash}</span>`:''}</div>
     <h3 class="m-title">${esc(r.name)}에서 만나고 싶은 팀</h3>
-    <ul class="members">${t.m.map((x,i)=>`<li><span class="mav">${i+1}</span><div><b>${esc(x[1])}</b><small>${x[0]}세, ${esc(x[2])}, 재직 인증 완료</small></div></li>`).join('')}</ul>
+    <ul class="members">${t.m.map((x,i)=>`<li><span class="mav">${i+1}</span><div><b>${esc(x[1])}</b><small>${x[0]}세, ${esc(x[2])}${x[3]?', '+esc(x[3]):''}, 재직 인증 완료</small></div></li>`).join('')}</ul>
     <dl class="kv"><dt>장소</dt><dd>${LOC[t.loc].label} (${esc(r.name)})</dd><dt>시간</dt><dd>${esc(t.when)}</dd><dt>분위기</dt><dd>${t.vibe.map(esc).join(', ')}</dd><dt>평균 나이</dt><dd>${avg(t)}세</dd>${t.h?`<dt>평균 키</dt><dd>${avgH(t)}cm</dd>`:''}${t.flash?`<dt>번개</dt><dd>⚡ 오늘 ${t.flash}에 만나요</dd>`:''}</dl>
     ${t.intro?`<p class="quote">“${esc(t.intro)}”</p>`:''}
     <p class="note">회사명은 미팅이 확정되면 서로에게 공개돼요.</p>
