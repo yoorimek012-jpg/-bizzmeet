@@ -314,7 +314,8 @@ textarea.input{height:auto;padding:12px 14px;resize:none;line-height:1.5}
 .tag.flash{background:#fff1d6;color:#8a5205}
 .chip.flash.on{background:#f5a524;border-color:#f5a524;color:#2a1630}
 .lineup li span.age{display:inline-block;min-width:42px;margin:0 6px 0 0;color:var(--rose);font-weight:700;font-size:14px}
-.mrow.h4{grid-template-columns:30px 58px 1fr 66px}
+.mrow.h4{grid-template-columns:30px 58px 1fr 72px}
+.mrow.h4 .input{padding:0 7px}
 .toggle-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
 .switch{position:relative;width:48px;height:28px;border-radius:14px;border:0;background:var(--line);flex:none}
 .switch::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
@@ -580,18 +581,18 @@ const REGIONS=[
 const TEAMS=[
   {id:'f1',g:'F',size:2,loc:'company',region:'gangnam',m:[[27,'모빌리티 사업기획','대기업·제조'],[26,'VC 심사역','금융']],when:'평일 저녁',vibe:['와인바','편한 대화'],intro:'퇴근하고 강남역 근처에서 와인 한잔하면서 편하게 이야기 나눠요.'},
   {id:'f2',g:'F',size:2,loc:'mid',region:'pangyo',m:[[28,'IT 서비스 기획','IT·테크'],[27,'UX 디자이너','IT·테크']],when:'금요일 저녁',vibe:['수제맥주','맛집 탐방'],intro:'판교나 성수 쪽 중간에서 맛있는 거 먹으면서 친해져요.'},
-  {id:'f3',g:'F',size:3,loc:'home',region:'seongsu',m:[[29,'브랜드 마케터','유통·소비재'],[28,'패션 MD','유통·소비재'],[29,'회계사','전문직']],when:'주말 저녁',vibe:['이자카야','보드게임'],intro:'셋 다 성수 주민이에요. 주말에 동네에서 가볍게 만나요.'},
+  {id:'f3',g:'F',size:3,loc:'home',region:'seongsu',m:[[29,'브랜드 마케터','유통·소비재'],[28,'패션 MD','유통·소비재'],[29,'회계사','전문직']],when:'주말 저녁',vibe:['이자카야','보드게임'],intro:'주말에 성수에서 가볍게 만나요. 보드게임 좋아하시면 더 반가워요.'},
   {id:'f4',g:'F',size:3,loc:'company',region:'yeouido',m:[[30,'증권사 리서치','금융'],[29,'은행 기업금융','금융'],[28,'핀테크 PM','스타트업']],when:'평일 저녁',vibe:['조용한 대화','와인바']},
   {id:'f5',g:'F',size:4,loc:'mid',region:'hannam',m:[[27,'광고 AE','미디어·광고'],[28,'외국계 HR','대기업·제조'],[27,'약사','의료·제약'],[29,'건축 설계','전문직']],when:'주말 저녁',vibe:['다이닝','칵테일바'],intro:'대학 동기 넷이에요. 한남동에서 분위기 좋은 곳 같이 가요.'},
-  {id:'f6',g:'F',size:2,loc:'company',region:'gwanghwamun',m:[[31,'공공기관 정책연구','공공·공기업'],[30,'일간지 기자','미디어·광고']],when:'평일 저녁',vibe:['노포','편한 대화'],intro:'광화문 근처에서 일해요. 을지로 노포 좋아하시면 반가워요.'},
+  {id:'f6',g:'F',size:2,loc:'company',region:'gwanghwamun',m:[[31,'공공기관 정책연구','공공·공기업'],[30,'일간지 기자','미디어·광고']],when:'평일 저녁',vibe:['노포','편한 대화'],intro:'을지로 노포 좋아하시면 반가워요. 퇴근 후 편하게 한잔해요.'},
   {id:'f7',g:'F',size:2,loc:'home',region:'sinsa',m:[[26,'스타트업 PM','스타트업'],[27,'게임 기획','IT·테크']],when:'주말 낮',vibe:['브런치','카페']},
   {id:'f8',g:'F',size:3,loc:'mid',region:'jamsil',m:[[30,'제약 마케팅','의료·제약'],[29,'간호사','의료·제약'],[31,'세무사','전문직']],when:'주말 저녁',vibe:['맛집 탐방','편한 대화'],intro:'잠실이 셋 다 오기 편한 중간이라 골랐어요.'},
   {id:'f9',g:'F',size:2,loc:'company',region:'gangnam',m:[[29,'컨설턴트','전문직'],[28,'대기업 전략기획','대기업·제조']],when:'평일 저녁',vibe:['칵테일바','조용한 대화']},
-  {id:'m1',g:'M',size:2,loc:'company',region:'gangnam',m:[[30,'반도체 엔지니어','대기업·제조'],[31,'경영 컨설턴트','전문직']],when:'평일 저녁',vibe:['와인바','편한 대화'],intro:'강남역 근처 회사 다녀요. 퇴근 후 조용한 곳에서 이야기 나눠요.'},
-  {id:'m2',g:'M',size:2,loc:'company',region:'yeouido',m:[[31,'자산운용 펀드매니저','금융'],[30,'회계법인 감사','전문직']],when:'평일 저녁',vibe:['이자카야','편한 대화'],intro:'여의도에서 일해요. 숫자 얘기는 안 할게요.'},
+  {id:'m1',g:'M',size:2,loc:'company',region:'gangnam',m:[[30,'반도체 엔지니어','대기업·제조'],[31,'경영 컨설턴트','전문직']],when:'평일 저녁',vibe:['와인바','편한 대화'],intro:'강남역에서 퇴근 후 조용한 곳에서 이야기 나눠요.'},
+  {id:'m2',g:'M',size:2,loc:'company',region:'yeouido',m:[[31,'자산운용 펀드매니저','금융'],[30,'회계법인 감사','전문직']],when:'평일 저녁',vibe:['이자카야','편한 대화'],intro:'여의도에서 만나요. 일 얘기는 안 할게요.'},
   {id:'m3',g:'M',size:3,loc:'company',region:'pangyo',m:[[29,'백엔드 개발','IT·테크'],[30,'데이터 사이언티스트','IT·테크'],[31,'프로덕트 매니저','IT·테크']],when:'금요일 저녁',vibe:['수제맥주','보드게임'],intro:'판교 IT 셋이에요. 대화 끊기지 않게 준비해 갈게요.'},
   {id:'m4',g:'M',size:2,loc:'mid',region:'seongsu',m:[[32,'건설 PM','대기업·제조'],[31,'제약 영업마케팅','의료·제약']],when:'주말 저녁',vibe:['맛집 탐방','카페']},
-  {id:'m5',g:'M',size:3,loc:'home',region:'hongdae',m:[[28,'웹툰 PD','미디어·광고'],[29,'음악 플랫폼 기획','IT·테크'],[30,'브랜드 디자이너','미디어·광고']],when:'주말 저녁',vibe:['LP바','편한 대화'],intro:'합정 근처 살아요. 좋아하는 음악 이야기로 시작해요.'},
+  {id:'m5',g:'M',size:3,loc:'home',region:'hongdae',m:[[28,'웹툰 PD','미디어·광고'],[29,'음악 플랫폼 기획','IT·테크'],[30,'브랜드 디자이너','미디어·광고']],when:'주말 저녁',vibe:['LP바','편한 대화'],intro:'합정에서 만나요. 좋아하는 음악 이야기로 시작해요.'},
   {id:'m6',g:'M',size:4,loc:'company',region:'guro',m:[[30,'게임 클라이언트 개발','IT·테크'],[31,'QA 리드','IT·테크'],[29,'사업개발','스타트업'],[32,'인프라 엔지니어','IT·테크']],when:'평일 저녁',vibe:['고기집','보드게임'],intro:'구디 게임사 동료 넷이에요. 분위기 띄우는 건 자신 있어요.'},
   {id:'m7',g:'M',size:2,loc:'mid',region:'hannam',m:[[29,'외교부 사무관','공공·공기업'],[30,'변호사','전문직']],when:'주말 저녁',vibe:['다이닝','와인바']},
   {id:'m8',g:'M',size:3,loc:'mid',region:'jamsil',m:[[31,'항공사 운항관리','대기업·제조'],[30,'은행 IT','금융'],[32,'한의사','의료·제약']],when:'주말 저녁',vibe:['맛집 탐방','편한 대화'],intro:'잠실에서 만나요. 맛집은 저희가 찾아둘게요.'},
@@ -614,6 +615,10 @@ const PKGS=[
 const HEIGHTS={f1:[163,165],f2:[160,167],f3:[162,158,166],f5:[164,161,168,163],f6:[166,162],f8:[159,163,161],f9:[167,162],m1:[178,175],m2:[181,176],m3:[174,179,177],m5:[176,172,180],m6:[175,178,173,182],m7:[180,177],m8:[176,179,174],m9:[183,176,178,179]};
 const FLASH={f1:'20:00',f2:'21:00',f7:'19:30',m1:'20:30',m4:'19:00',m7:'21:00',m3:'20:00'};
 TEAMS.forEach(t=>{if(HEIGHTS[t.id])t.h=HEIGHTS[t.id];if(FLASH[t.id])t.flash=FLASH[t.id];});
+const FLEX=['f2','f5','f8','m4','m7','m8','m9'];
+TEAMS.forEach(t=>{t.flex=FLEX.includes(t.id);});
+const STARTS=[{id:'nowon',name:'노원'},{id:'gundae',name:'건대입구'},{id:'mokdong',name:'목동'},{id:'sadang',name:'사당'},{id:'sillim',name:'신림'},{id:'ilsan',name:'일산'},{id:'incheon',name:'인천'},{id:'suwon',name:'수원'}];
+const START_XY={nowon:[760,20],gundae:[740,330],mokdong:[120,380],sadang:[430,620],sillim:[330,640],ilsan:[0,60],incheon:[-250,450],suwon:[560,1100]};
 const CTYPE={f1:['대기업','금융사'],f2:['대기업','스타트업'],f3:['중견·중소','대기업','전문직'],f4:['금융사','금융사','스타트업'],f5:['중견·중소','외국계','전문직','중견·중소'],f6:['공공기관','중견·중소'],f7:['스타트업','중견·중소'],f8:['외국계','공공기관','전문직'],f9:['외국계','대기업'],m1:['대기업','외국계'],m2:['금융사','전문직'],m3:['대기업','대기업','스타트업'],m4:['대기업','외국계'],m5:['중견·중소','스타트업','중견·중소'],m6:['중견·중소','중견·중소','스타트업','중견·중소'],m7:['공공기관','전문직'],m8:['대기업','금융사','전문직'],m9:['스타트업','금융사','중견·중소','전문직']};
 TEAMS.forEach(t=>{const c=CTYPE[t.id];if(c)t.m.forEach((x,i)=>{x[3]=c[i]||c[0];});});
 const CTYPES=['대기업','중견·중소','스타트업','외국계','공공기관','금융사','전문직'];
@@ -648,7 +653,7 @@ function wrap(o){
   return o;
 }
 let S=wrap(load());
-const V={tab:'map',loc:'all',size:'all',region:null,flash:false,q:'',ages:[],heights:[],vibes:[],ctype:[]};
+const V={tab:'map',flex:false,loc:'all',size:'all',region:null,flash:false,q:'',ages:[],heights:[],vibes:[],ctype:[]};
 
 /* ---------- 유틸 ---------- */
 const $=s=>document.querySelector(s);
@@ -791,7 +796,7 @@ function render(){
   if(V.tab==='meet')renderMeet();
   if(V.tab==='my')renderMy();
 }
-function baseOk(t){return t.g===oppG()&&(V.loc==='all'||t.loc===V.loc)&&(V.size==='all'||t.size===+V.size)&&(!V.flash||t.flash);}
+function baseOk(t){return t.g===oppG()&&(!V.flex||t.flex)&&(V.size==='all'||t.size===+V.size)&&(!V.flash||t.flash);}
 function passFilters(t,f){
   const q=(f.q||'').trim().toLowerCase();
   if(q){const hay=[t.m.map(x=>x[1]+' '+x[2]+' '+(x[3]||'')).join(' '),t.vibe.join(' '),t.intro||'',regionById(t.region).name,t.when].join(' ').toLowerCase();if(!q.split(/\s+/).every(w=>hay.includes(w)))return false;}
@@ -805,7 +810,7 @@ function passFilters(t,f){
 function curFilter(){return{q:V.q,ages:V.ages,heights:V.heights,vibes:V.vibes,ctype:S.premium?V.ctype:[],ind:S.premium?S.ind:[]};}
 function activeFilterCount(){const f=curFilter();return[f.ages,f.heights,f.vibes,f.ctype,f.ind].filter(a=>a.length).length;}
 function visibleTeams(){const f=curFilter();return TEAMS.filter(t=>baseOk(t)&&passFilters(t,f));}
-function clearFilters(){V.q='';V.ages=[];V.heights=[];V.vibes=[];V.ctype=[];S.ind=[];V.loc='all';V.size='all';V.flash=false;const q=$('#q');if(q)q.value='';save();render();}
+function clearFilters(){V.q='';V.ages=[];V.heights=[];V.vibes=[];V.ctype=[];S.ind=[];V.flex=false;V.size='all';V.flash=false;const q=$('#q');if(q)q.value='';save();render();}
 function renderSearch(){const n=activeFilterCount(),c=$('#fcount');if(!c)return;c.hidden=!n;c.textContent=n;$('#fbtn').classList.toggle('on',n>0);}
 let F=null;
 function openFilter(){F={ages:[...V.ages],heights:[...V.heights],vibes:[...V.vibes],ctype:[...V.ctype],ind:[...S.ind]};openModal('<div id="fBody"></div>');renderFilter();}
@@ -833,9 +838,8 @@ function switchTeam(id){S.activeTeam=id;const t=S.myTeam;V.size=String(t.size);s
 function tName(tid){const t=S.teams.find(x=>x.id===tid);return t?` <span class="tag plum">${esc(t.name)}</span>`:'';}
 function renderChips(){
   const el=$('#chips'),sl=el.scrollLeft;
-  const locs=[['all','모든 장소'],['company','🏢 회사 근처'],['home','🏠 집 근처'],['mid','📍 중간 지점']];
   const sizes=[['all','모든 인원'],['2','2:2'],['3','3:3'],['4','4:4']];
-  el.innerHTML=`<button class="chip flash ${V.flash?'on':''}" onclick="V.flash=!V.flash;render()">⚡ 오늘 번개</button><span class="chip-sep"></span>`+locs.map(([v,l])=>`<button class="chip ${V.loc===v?'on':''}" onclick="V.loc='${v}';render()">${l}</button>`).join('')
+  el.innerHTML=`<button class="chip flash ${V.flash?'on':''}" onclick="V.flash=!V.flash;render()">⚡ 오늘 번개</button><button class="chip ${V.flex?'on':''}" onclick="V.flex=!V.flex;render()">🤝 장소 협의 가능</button>`
     +'<span class="chip-sep"></span>'
     +sizes.map(([v,l])=>`<button class="chip ${V.size===v?'on':''}" onclick="V.size='${v}';render()">${l}</button>`).join('')
     ;
@@ -915,7 +919,7 @@ function initSheet(){
 function teamCard(t){
   const r=regionById(t.region),mt=S.meetings.find(m=>m.teamId===t.id&&!['declined','cancelled'].includes(m.status));
   return `<button class="tcard" data-team="${t.id}">
-    <div class="tc-top"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span><span class="tag">${LOC[t.loc].icon} ${LOC[t.loc].label}</span>${t.flash?`<span class="tag flash">⚡ 오늘 ${t.flash}</span>`:''}${mt?'<span class="tag ok">신청함</span>':''}<span class="tc-place">${esc(r.name)}</span></div>
+    <div class="tc-top"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span>${t.flex?'<span class="tag">🤝 장소 협의 가능</span>':''}${t.flash?`<span class="tag flash">⚡ 오늘 ${t.flash}</span>`:''}${mt?'<span class="tag ok">신청함</span>':''}<span class="tc-place">📍 ${esc(r.name)}</span></div>
     <ul class="lineup">${t.m.map(x=>`<li><span class="age">${x[0]}세</span>${esc(x[1])}</li>`).join('')}</ul>
     ${t.intro?`<p class="tc-intro">“${esc(t.intro)}”</p>`:''}
     <div class="tc-tags"><span>평균 ${avg(t)}세</span>${t.h?`<span>평균 키 ${avgH(t)}cm</span>`:''}<span>${esc(t.when)}</span>${t.vibe.map(v=>`<span>${esc(v)}</span>`).join('')}</div>
@@ -934,10 +938,10 @@ function renderSheet(){
 /* ---------- 팀 상세 & 신청 ---------- */
 function openTeam(id){
   const t=teamById(id),r=regionById(t.region);
-  openModal(`<div class="tc-top" style="margin-top:6px"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span><span class="tag">${LOC[t.loc].icon} ${LOC[t.loc].label}</span>${t.flash?`<span class="tag flash">⚡ 오늘 ${t.flash}</span>`:''}</div>
+  openModal(`<div class="tc-top" style="margin-top:6px"><span class="tag rose">${gLabel(t.g)} ${t.size}:${t.size}</span>${t.flex?'<span class="tag">🤝 장소 협의 가능</span>':''}${t.flash?`<span class="tag flash">⚡ 오늘 ${t.flash}</span>`:''}</div>
     <h3 class="m-title">${esc(r.name)}에서 만나고 싶은 팀</h3>
     <ul class="members">${t.m.map((x,i)=>`<li><span class="mav">${i+1}</span><div><b>${esc(x[1])}</b><small>${x[0]}세, ${esc(x[2])}${x[3]?', '+esc(x[3]):''}, 재직 인증 완료</small></div></li>`).join('')}</ul>
-    <dl class="kv"><dt>장소</dt><dd>${LOC[t.loc].label} (${esc(r.name)})</dd><dt>시간</dt><dd>${esc(t.when)}</dd><dt>분위기</dt><dd>${t.vibe.map(esc).join(', ')}</dd><dt>평균 나이</dt><dd>${avg(t)}세</dd>${t.h?`<dt>평균 키</dt><dd>${avgH(t)}cm</dd>`:''}${t.flash?`<dt>번개</dt><dd>⚡ 오늘 ${t.flash}에 만나요</dd>`:''}</dl>
+    <dl class="kv"><dt>희망 지역</dt><dd>${esc(r.name)}${t.flex?' (대화로 조정 가능)':''}</dd><dt>시간</dt><dd>${esc(t.when)}</dd><dt>분위기</dt><dd>${t.vibe.map(esc).join(', ')}</dd><dt>평균 나이</dt><dd>${avg(t)}세</dd>${t.h?`<dt>평균 키</dt><dd>${avgH(t)}cm</dd>`:''}${t.flash?`<dt>번개</dt><dd>⚡ 오늘 ${t.flash}에 만나요</dd>`:''}</dl>
     ${t.intro?`<p class="quote">“${esc(t.intro)}”</p>`:''}
     <p class="note">회사명은 미팅이 확정되면 서로에게 공개돼요.</p>
     <div class="m-actions"><button class="btn btn-ghost" style="flex:.45" onclick="openReport('${t.id}')">신고</button><button class="btn btn-primary" onclick="requestMeeting('${t.id}')">무료로 미팅 신청하기</button></div>`);
@@ -1006,7 +1010,7 @@ function toggleInd(el,i){const k=S.ind.indexOf(i);if(k<0)S.ind.push(i);else S.in
 let ct=null;
 function openCreateTeam(force){
   if(S.teams.length>=MAX_TEAMS){openModal(`<h3 class="m-title">팀은 최대 ${MAX_TEAMS}개까지예요</h3><p class="m-text">약속이 너무 많아지면 관리가 어렵고 노쇼로 이어지기 쉬워요. 새 팀을 만들려면 MY 탭에서 안 쓰는 팀을 해체해 주세요.</p><div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">닫기</button><button class="btn btn-primary" onclick="closeModal();setTab('my')">MY에서 팀 관리</button></div>`);return;}
-  ct={size:2,loc:'company',region:'',when:[],vibe:[],members:[],intro:'',flash:'',name:''};renderCT(true);
+  ct={size:2,flex:false,region:'',when:[],vibe:[],members:[],intro:'',flash:'',name:''};renderCT(true);
 }
 function ctCollect(){
   if(!ct)return;
@@ -1022,8 +1026,8 @@ function renderCT(first){
   const html=`
   <div class="sec"><h4>팀 이름</h4><input class="input" id="ctName" maxlength="12" placeholder="예: 회사 동기, 대학 친구" value="${esc(ct.name||'')}"><p class="hint">팀이 여러 개일 때 구분하는 이름이에요. 상대 팀에게는 보이지 않아요.</p></div>
   <div class="sec"><h4>몇 대 몇으로 만날까요?</h4><div class="seg">${[2,3,4].map(n=>`<button class="${ct.size===n?'on':''}" onclick="ctSet('size',${n})">${n}:${n}</button>`).join('')}</div></div>
-  <div class="sec"><h4>어디서 만나고 싶어요?</h4><div class="seg">${Object.entries(LOC).map(([k,v])=>`<button class="${ct.loc===k?'on':''}" onclick="ctSet('loc','${k}')">${v.icon} ${v.label}</button>`).join('')}</div><p class="hint">${LOC[ct.loc].hint}</p></div>
-  <div class="sec"><h4>희망 지역</h4><div class="picks">${REGIONS.map(r=>`<button class="chip ${ct.region===r.id?'on':''}" onclick="ctSet('region','${r.id}')">${r.name}</button>`).join('')}</div></div>
+  <div class="sec"><h4>만나고 싶은 지역</h4><p class="hint" style="margin:-2px 0 8px">사는 곳이나 회사 위치가 아니라, 만나고 싶은 곳을 골라 주세요.</p><div class="picks">${REGIONS.map(r=>`<button class="chip ${ct.region===r.id?'on':''}" onclick="ctSet('region','${r.id}')">${r.name}</button>`).join('')}</div></div>
+  <div class="sec"><div class="toggle-row"><span><b>🤝 장소는 대화로 정해도 좋아요</b><br><span class="muted" style="font-size:12.5px">매칭되면 ‘중간 지점 찾기’로 상대 팀과 같이 정할 수 있어요.</span></span><button class="switch ${ct.flex?'on':''}" aria-label="장소 협의 가능 켜기" onclick="ctSet('flex',!ct.flex)"></button></div></div>
   <div class="sec"><h4>편한 시간 (여러 개 선택)</h4><div class="picks">${WHEN.map(w=>`<button class="chip ${ct.when.includes(w)?'on':''}" onclick="ctToggle('when','${w}')">${w}</button>`).join('')}</div></div>
   <div class="sec"><h4>팀원 정보 (나이·직무 필수)</h4>
     <div class="me-row"><span class="mav">1</span><span><b>${esc(u.nick)} (방장)</b><br><span class="muted">${u.age}세, ${esc(u.job)}${u.height?`, ${u.height}cm`:''}, ${vPending(u)?'⏳':'✓'} ${esc(vLabel(u))}</span></span></div>
@@ -1031,7 +1035,7 @@ function renderCT(first){
     <p class="hint">키는 선택이에요. 입력한 사람만 모아 ‘팀 평균 키’로만 보여주고, 개인 키는 공개하지 않아요.</p><p class="hint">친구들은 초대 링크로 가입하면서 직접 회사 메일 인증을 해요. 전원 인증이 끝나야 팀이 열려요.</p></div>
   <div class="sec"><div class="toggle-row"><span><b>⚡ 오늘 번개로 올리기</b><br><span class="muted" style="font-size:12.5px">오늘 바로 만날 수 있는 팀만 모아 보는 번개 목록에 떠요.</span></span><button class="switch ${ct.flash?'on':''}" aria-label="오늘 번개 켜기" onclick="ctSet('flash',ct.flash?'':'20:00')"></button></div>${ct.flash?`<div class="picks" style="margin-top:10px">${['19:00','19:30','20:00','20:30','21:00','21:30'].map(x=>`<button class="chip ${ct.flash===x?'on':''}" onclick="ctSet('flash','${x}')">${x}</button>`).join('')}</div>`:''}</div>
   <div class="sec"><h4>분위기</h4><div class="picks">${VIBES.map(v=>`<button class="chip ${ct.vibe.includes(v)?'on':''}" onclick="ctToggle('vibe','${v}')">${v}</button>`).join('')}</div></div>
-  <div class="sec"><h4>우리 팀 한마디</h4><textarea class="input" id="ctIntro" rows="3" maxlength="120" placeholder="예: 퇴근 후 강남역 근처 와인바에서 편하게 이야기 나눠요.">${esc(ct.intro)}</textarea><p class="hint">10자 이상, 상대 팀이 가장 먼저 읽는 문장이에요.</p></div>
+  <div class="sec"><h4>우리 팀 한마디</h4><textarea class="input" id="ctIntro" rows="3" maxlength="120" placeholder="예: 퇴근 후 강남역 근처 와인바에서 편하게 이야기 나눠요.">${esc(ct.intro)}</textarea><p class="hint">10자 이상, 상대 팀이 가장 먼저 읽는 문장이에요. 회사 이름이나 사는 동네는 적지 않는 걸 권해요.</p></div>
   <p class="err" id="ctErr" hidden style="margin-bottom:10px"></p>
   <button class="btn btn-primary" onclick="ctSubmit()">팀 만들고 초대 링크 받기</button>`;
   if(first)openPanel('우리 팀 만들기',html);
@@ -1045,7 +1049,7 @@ function ctSubmit(){
   if((ct.intro||'').trim().length<10)errs.push('팀 한마디를 10자 이상 써 주세요.');
   const e=$('#ctErr');e.hidden=!errs.length;e.textContent=errs.join(' ');
   if(errs.length){e.scrollIntoView({block:'center',behavior:'smooth'});return;}
-  S.myTeam={name:(ct.name||'').trim()||(ct.size+':'+ct.size+' 팀'),code:uid().padEnd(6,'0').slice(0,6),size:ct.size,loc:ct.loc,region:ct.region,when:ct.when.slice(),vibe:ct.vibe.slice(),intro:ct.intro.trim(),flash:ct.flash,
+  S.myTeam={name:(ct.name||'').trim()||(ct.size+':'+ct.size+' 팀'),code:uid().padEnd(6,'0').slice(0,6),size:ct.size,flex:!!ct.flex,region:ct.region,when:ct.when.slice(),vibe:ct.vibe.slice(),intro:ct.intro.trim(),flash:ct.flash,
     members:[{age:S.user.age,job:S.user.job,h:S.user.height||null,me:true,joined:true}].concat(ct.members.slice(0,ct.size-1).map(m=>({age:+m.age,job:m.job.trim(),h:m.h?+m.h:null,joined:false}))),status:'inviting'};
   V.size=String(ct.size);save();ct=null;render();openInvite();
 }
@@ -1078,7 +1082,7 @@ function renderLounge(){
   $('#loungeBody').innerHTML=`<div class="head-block"><h2>솔로 라운지</h2><p>${gLabel(g)} 회원끼리만 보이는 공간이에요. 같이 나갈 팀원을 먼저 구하고, 팀이 되면 이성 팀에 신청해요.</p></div>
     <button class="btn btn-primary" style="margin-bottom:16px" onclick="openWritePost()">팀원 모집 글 쓰기</button>
     ${list.map(p=>{const r=regionById(p.region),have=p.have.length,slots=Array.from({length:p.size},(_,i)=>`<i class="${i<have?'':'e'}"></i>`).join('');
-      return `<article class="pcard"><div class="tc-top"><span class="tag plum">${gLabel(p.g)} ${p.size}:${p.size} 팀원 모집</span>${p.mine?'<span class="tag warn">내 글</span>':''}<span class="tc-place">${esc(r.name)}</span></div>
+      return `<article class="pcard"><div class="tc-top"><span class="tag plum">${gLabel(p.g)} ${p.size}:${p.size} 팀원 모집</span>${p.mine?'<span class="tag warn">내 글</span>':''}<span class="tc-place">📍 ${esc(r.name)}</span></div>
       <h4>${esc(p.title)}</h4><p>${p.have.map(x=>`${esc(x[1])} ${x[0]}세`).join(', ')}</p><p style="margin-top:4px">${esc(p.body)}</p>
       <div class="slots">${slots}<span>${have}/${p.size}명</span></div>
       <div class="pfoot"><span class="muted" style="font-size:12.5px">${p.mine?'다른 회원의 합류 신청을 기다려요':'대화해 보고 팀을 확정해요'}</span>${p.mine?'':`<button class="btn btn-ink btn-sm" onclick="openChat('${p.id}')">대화하고 합류</button>`}</div></article>`;}).join('')}`;
@@ -1127,7 +1131,7 @@ function sendChat(pid){
 function confirmFromPost(pid,force){
   const p=findPost(pid);
   if(S.teams.length>=MAX_TEAMS){toast(`팀은 최대 ${MAX_TEAMS}개까지예요. MY에서 안 쓰는 팀을 해체해 주세요.`);return;}
-  S.myTeam={name:'솔로 라운지 팀',code:uid().padEnd(6,'0').slice(0,6),size:p.size,loc:'mid',region:p.region,when:['주말 저녁'],vibe:['편한 대화'],intro:p.body,
+  S.myTeam={name:'솔로 라운지 팀',code:uid().padEnd(6,'0').slice(0,6),size:p.size,flex:true,region:p.region,when:['주말 저녁'],vibe:['편한 대화'],intro:p.body,
     members:p.have.map(x=>({age:x[0],job:x[1],joined:true})).concat([{age:S.user.age,job:S.user.job,me:true,joined:true}]),status:'ready',fromLounge:true};
   addIncoming();save();closePanel();setTab('map');V.size=String(p.size);render();
   toast(`${p.size}:${p.size} 팀이 확정됐어요! 같은 인원의 이성 팀만 보여드려요.`);
@@ -1164,7 +1168,7 @@ function meetCard(m){
   else if(m.status==='done')acts=`<button class="btn btn-primary btn-sm" onclick="openReview('${m.id}')">후기·매너 평가</button>`;
   const info=m.status==='scheduled'?`<p style="margin-top:6px;color:var(--text);font-weight:600">${fmtD(m.date)}, ${esc(m.place)}</p>`:'';
   const pendNote=m.dir==='out'&&m.status==='pending'?'<p class="hint">신청은 무료예요. 48시간 안에 답이 없으면 자동으로 정리돼요.</p>':(m.dir==='out'&&m.status==='accepted'?'<p class="hint">수락 후 24시간 안에 결제해야 확정돼요.</p>':'');
-  return `<article class="mcard">${head}<h4>${t.m.map(x=>`${esc(x[1])} ${x[0]}`).join(', ')}</h4><p>${gLabel(t.g)} ${t.size}:${t.size}, ${esc(r.name)}, ${LOC[t.loc].label}</p>${m.msg?`<p class="quote" style="font-size:14px;margin:10px 0 0">“${esc(m.msg)}”</p>`:''}${info}${pendNote}${acts?`<div class="acts">${acts}</div>`:''}</article>`;
+  return `<article class="mcard">${head}<h4>${t.m.map(x=>`${esc(x[1])} ${x[0]}`).join(', ')}</h4><p>${gLabel(t.g)} ${t.size}:${t.size}, ${esc(r.name)}${t.flex?', 장소 협의 가능':''}</p>${m.msg?`<p class="quote" style="font-size:14px;margin:10px 0 0">“${esc(m.msg)}”</p>`:''}${info}${pendNote}${acts?`<div class="acts">${acts}</div>`:''}</article>`;
 }
 function meet(id){return S.meetings.find(m=>m.id===id);}
 let schForce='';
@@ -1262,13 +1266,30 @@ function openSchedule(id){
   const m=meet(id),t=teamById(m.teamId),r=regionById(t.region);
   const d=new Date(Date.now()+3*864e5);d.setHours(19,30,0,0);
   const local=new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,16);
-  openModal(`<h3 class="m-title">일정과 장소를 정해요</h3><p class="m-text">상대 팀 선호: ${LOC[t.loc].label}, ${esc(r.name)}, ${esc(t.when)}</p>
+  openModal(`<h3 class="m-title">일정과 장소를 정해요</h3><p class="m-text">상대 팀 희망: ${esc(r.name)}${t.flex?' (협의 가능)':''}, ${esc(t.when)}</p>
     <div class="field"><label for="schDate">날짜와 시간</label><input class="input" id="schDate" type="datetime-local" value="${local}"></div>
-    <div class="field"><label for="schPlace">장소</label><input class="input" id="schPlace" placeholder="예: ${esc(r.name)} 근처 와인바"></div>
+    <div class="field"><label for="schPlace">장소</label><input class="input" id="schPlace" placeholder="예: ${esc(r.name)} 근처 와인바" value="${esc(m.placeHint||'')}"><button class="btn btn-line btn-sm" style="margin-top:8px;width:100%" onclick="openMid('${id}')">📍 양 팀의 중간 지점 찾기</button></div>
     <p class="note">실서비스에서는 확정과 동시에 양 팀 단체 대화방이 열리고, 전날과 2시간 전에 알림톡이 가요.</p>
     <p class="err" id="schErr" hidden></p>
     <div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">나중에</button><button class="btn btn-primary" onclick="saveSchedule('${id}')">이대로 확정</button></div>`);
 }
+function xyOf(id){const r=regionById(id);return r?[r.x,r.y]:START_XY[id];}
+function placeOptions(sel){return `<optgroup label="미팅 지역">${REGIONS.map(r=>`<option value="${r.id}" ${r.id===sel?'selected':''}>${r.name}</option>`).join('')}</optgroup><optgroup label="그 외 출발 지역">${STARTS.map(r=>`<option value="${r.id}" ${r.id===sel?'selected':''}>${r.name}</option>`).join('')}</optgroup>`;}
+function openMid(id){
+  const m=meet(id),t=teamById(m.teamId),mine=(S.teams.find(x=>x.id===m.tid)||S.myTeam||{}).region||'gangnam';
+  openModal(`<h3 class="m-title">📍 중간 지점 찾기</h3><p class="m-text">각 팀이 출발할 대략적인 지역만 골라요. 정확한 주소는 묻지 않고, 저장하지도 않아요.</p>
+    <div class="field"><label for="midA">우리 팀 출발 지역</label><select class="input" id="midA">${placeOptions(mine)}</select></div>
+    <div class="field"><label for="midB">상대 팀 출발 지역</label><select class="input" id="midB">${placeOptions(t.region)}</select><p class="hint">실서비스에서는 상대 팀이 단체 대화방에서 직접 골라요.</p></div>
+    <div id="midRes"></div>
+    <div class="m-actions"><button class="btn btn-ghost" onclick="openSchedule('${id}')">뒤로</button><button class="btn btn-primary" onclick="calcMid('${id}')">중간 지점 계산</button></div>`);
+}
+function calcMid(id){
+  const A=xyOf($('#midA').value),B=xyOf($('#midB').value),M=[(A[0]+B[0])/2,(A[1]+B[1])/2];
+  const d=(p,q)=>Math.hypot(p[0]-q[0],p[1]-q[1]);
+  const rank=REGIONS.map(r=>{const P=[r.x,r.y],da=d(A,P),db=d(B,P);return{r,score:d(M,P)+Math.abs(da-db)*.6,fair:Math.round(Math.min(da,db)/Math.max(da,db,1)*100)};}).sort((p,q)=>p.score-q.score).slice(0,3);
+  $('#midRes').innerHTML=`<p class="group-title" style="margin-top:4px">추천 지역</p><ul class="pick-list">${rank.map((x,i)=>`<li><button onclick="pickMid('${id}','${x.r.name}')"><span class="mav">${i+1}</span><span><b>${x.r.name}</b><small>양쪽 이동 거리 균형 ${x.fair}%</small></span></button></li>`).join('')}</ul><p class="demo" style="margin-bottom:6px">데모 계산이에요. 실서비스에서는 카카오맵 같은 지도 API로 양 팀의 대중교통 소요 시간이 비슷한 곳을 찾아요.</p>`;
+}
+function pickMid(id,name){meet(id).placeHint=name+' 근처 ';save();openSchedule(id);toast(`${name}로 정했어요. 가게 이름을 이어서 적어 주세요.`);}
 function saveSchedule(id){
   const m=meet(id),dv=$('#schDate').value,pl=$('#schPlace').value.trim(),ts=new Date(dv).getTime();
   const e=$('#schErr'),msg=!dv||isNaN(ts)?'날짜를 골라 주세요.':ts<Date.now()?'지난 시간은 고를 수 없어요.':pl.length<2?'장소를 입력해 주세요.':'';
@@ -1360,7 +1381,7 @@ function renderMy(){
     <div class="stats"><div><b>${leftToday()}/${dayLimit()}</b><small>오늘 무료 신청</small></div><div><b>${S.manner}°</b><small>매너 온도</small></div><div><b>${S.premium?'이용 중':'없음'}</b><small>프리미엄</small></div></div>
     <button class="btn btn-primary" style="margin-bottom:12px" onclick="openPricing()">요금 안내·프리미엄</button>
     <div class="box"><h4>우리 팀 <span class="muted" style="font-size:13px">${S.teams.length}/${MAX_TEAMS}</span></h4>
-      ${S.teams.length?S.teams.map(t=>`<div class="team-row ${t.id===S.activeTeam?'on':''}"><div><b>${esc(t.name)}</b> <span class="tag ${t.status==='ready'?'ok':'warn'}">${t.status==='ready'?'활성':'인증 대기'}</span>${t.id===S.activeTeam?' <span class="tag rose">지금 둘러보는 팀</span>':''}<p style="font-size:13.5px;margin-top:4px">${t.size}:${t.size}, ${LOC[t.loc].label}, ${esc(regionById(t.region).name)}${t.flash?`, ⚡ 오늘 ${t.flash}`:''}${myAvgH(t)?`, 평균 키 ${myAvgH(t)}cm`:''}</p><p class="muted" style="font-size:12.5px">${t.members.map(m=>`${esc(m.job)} ${m.age}${m.joined?'':' (대기)'}`).join(', ')}</p></div>
+      ${S.teams.length?S.teams.map(t=>`<div class="team-row ${t.id===S.activeTeam?'on':''}"><div><b>${esc(t.name)}</b> <span class="tag ${t.status==='ready'?'ok':'warn'}">${t.status==='ready'?'활성':'인증 대기'}</span>${t.id===S.activeTeam?' <span class="tag rose">지금 둘러보는 팀</span>':''}<p style="font-size:13.5px;margin-top:4px">${t.size}:${t.size}, ${esc(regionById(t.region).name)}${t.flex?' (협의 가능)':''}${t.flash?`, ⚡ 오늘 ${t.flash}`:''}${myAvgH(t)?`, 평균 키 ${myAvgH(t)}cm`:''}</p><p class="muted" style="font-size:12.5px">${t.members.map(m=>`${esc(m.job)} ${m.age}${m.joined?'':' (대기)'}`).join(', ')}</p></div>
         <div class="row" style="margin-top:10px"><button class="btn btn-ghost btn-xs" onclick="disbandTeam('${t.id}')">해체</button><button class="btn btn-line btn-xs" onclick="S.activeTeam='${t.id}';save();openInvite()">${t.status==='ready'?'팀 정보·링크':'초대 링크'}</button>${t.id===S.activeTeam?'':`<button class="btn btn-ink btn-xs" onclick="switchTeam('${t.id}')">이 팀 선택</button>`}</div></div>`).join(''):'<p class="muted" style="font-size:13.5px">아직 팀이 없어요.</p>'}
       ${S.teams.length<MAX_TEAMS?`<div class="row" style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="setTab('lounge')">솔로 라운지</button><button class="btn btn-primary btn-sm" onclick="openCreateTeam()">+ 새 팀 만들기</button></div>`:`<p class="hint">팀은 최대 ${MAX_TEAMS}개까지 만들 수 있어요.</p>`}
     </div>
