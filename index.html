@@ -1417,7 +1417,7 @@ function renderMy(){
       <button class="list-btn" onclick="openPolicy()">노쇼·비매너 제재 정책<span class="muted">›</span></button>
       <button class="list-btn" onclick="toast('접수한 신고 ${S.reports.length}건 (데모)')">내 신고 내역<span class="muted">${S.reports.length}건</span></button>
     </div>
-    <div class="box"><h4>시연용</h4><p class="muted" style="font-size:13px;margin-bottom:10px">이 프로토타입은 데이터를 이 기기 브라우저에만 저장해요.</p><button class="btn btn-line btn-sm" onclick="resetAll()">데모 데이터 지우고 처음부터</button></div>`;
+    <div class="box"><h4>시연용</h4><p class="muted" style="font-size:13px;margin-bottom:10px">${u.dbId?'회원 정보는 장부에 저장돼요. 팀·미팅·하트는 아직 이 기기에만 저장돼요.':'지금 회원 정보는 이 기기에만 있어요. 아래 버튼으로 초기화하고 다시 가입하면 장부에 저장돼요.'}</p><button class="btn btn-line btn-sm" onclick="resetAll()">데모 데이터 지우고 처음부터</button></div>`;
 }
 function myAvgH(t){t=t||S.myTeam;if(!t)return 0;const hs=t.members.map(m=>m.h).filter(Boolean);return hs.length?Math.round(hs.reduce((a,b)=>a+b,0)/hs.length):0;}
 function approveCard(){S.user.cardStatus='approved';save();render();toast('재직 인증이 승인됐어요 (데모).');}
